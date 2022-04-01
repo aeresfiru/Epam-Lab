@@ -10,8 +10,6 @@ CREATE TABLE `gift_certificate`
     CONSTRAINT `PK_gift_certificate`
         PRIMARY KEY (`id`)
 );
-CREATE UNIQUE INDEX `UI_gift_certificate_name`
-    ON `gift_certificate` (`name`);
 
 CREATE TABLE `tag`
 (
@@ -28,7 +26,9 @@ CREATE TABLE `gift_certificate_tag`
     CONSTRAINT `PK_gift_certificate_tag`
         PRIMARY KEY (`certificate_id`, `tag_id`),
     CONSTRAINT `FK_gift_certificate_tag_certificate`
-        FOREIGN KEY (`certificate_id`) REFERENCES `gift_certificate` (`id`),
+        FOREIGN KEY (`certificate_id`) REFERENCES `gift_certificate` (`id`)
+            ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `FK_gift_certificate_tag_tag`
         FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`)
+            ON DELETE CASCADE ON UPDATE CASCADE
 );
