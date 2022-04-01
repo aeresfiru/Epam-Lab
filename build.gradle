@@ -19,7 +19,7 @@ def jacksonVersion = '2.13.0'
 def mockitoVersion = '4.4.0'
 def h2Version = '2.1.210'
 def junitVersion = '5.8.2'
-
+def hibernateValidatorVersion = '7.0.1.Final'
 subprojects {
     apply plugin: 'war'
     apply plugin: 'java'
@@ -90,6 +90,8 @@ subprojects {
 
         // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
+
+        implementation group: 'org.hibernate', name: 'hibernate-validator', version: hibernateValidatorVersion
     }
 
     test {
