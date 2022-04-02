@@ -28,13 +28,13 @@ class JdbcTagDaoImplTest {
 
     @BeforeEach
     void setUp() {
-        firstTestTag = new Tag(1L, "Free");
-        Tag secondTestTag = new Tag(11L, "Romance");
-        thirdTestTag = new Tag(13L, "14 February");
+        firstTestTag = Tag.builder().id(1L).name("Test").build();
+        Tag secondTestTag = Tag.builder().id(11L).name("Romance").build();
+        thirdTestTag = Tag.builder().id(13L).name("14 February").build();
         tagList = Arrays.asList(secondTestTag,
-                new Tag(12L, "Mothers day"),
+                Tag.builder().id(12L).name("Mothers day").build(),
                 thirdTestTag,
-                new Tag(14L, "Active"));
+                Tag.builder().id(14L).name("Active").build());
     }
 
     @Test

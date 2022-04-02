@@ -1,10 +1,8 @@
 package com.epam.esm.domain;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
@@ -12,12 +10,10 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-@Builder
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
-public class Certificate {
-
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+public class Certificate extends AbstractEntity {
 
     @NotEmpty(message = "Name may not be empty")
     @Length(min = 3, max = 100, message = "Name should be between 3 and 100 characters long")
