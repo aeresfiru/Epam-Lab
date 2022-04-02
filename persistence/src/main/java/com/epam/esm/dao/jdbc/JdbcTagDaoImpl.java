@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,37 +28,38 @@ public class JdbcTagDaoImpl implements TagDao {
             "DELETE FROM tag WHERE tag.id = ?;";
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
+    private final RowMapper<Tag> tagRowMapper;
 
     @Autowired
-    public JdbcTagDaoImpl(JdbcTemplate jdbcTemplate) {
+    public JdbcTagDaoImpl(JdbcTemplate jdbcTemplate,
+                          RowMapper<Tag> tagRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.tagRowMapper = tagRowMapper;
     }
 
     @Override
     public boolean create(Tag tag) {
-        simpleJdbcInsert.withTableName("tag").usingGeneratedKeyColumns("id");
-        Number id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(tag));
-        tag.setId(id.longValue());
         return jdbcTemplate.update(CREATE_ONE_SQL, tag.getName()) == 1;
     }
 
     @Override
     public List<Tag> readAll() {
-        return jdbcTemplate.query(SELECT_ALL_SQL,
-                new BeanPropertyRowMapper<>(Tag.class));
+        return jdbcTemplate.query(SELECT_ALL_SQL, tagRowMapper);
     }
 
     @Override
-    public Optional<Tag> read(long id) {
-        List<Tag> tags = jdbcTemplate.query(SELECT_ONE_SQL,
-                new BeanPropertyRowMapper<>(Tag.class), id);
+    public Optional<Tag> readById(Long id) {
+        List<Tag> tags = jdbcTemplate.query(SELECT_ONE_SQL, tagRowMapper, id);
         return Optional.ofNullable(DataAccessUtils.uniqueResult(tags));
     }
 
     @Override
-    public boolean delete(long id) {
+    public boolean update(Tag tag) {
+        throw new UnsupportedOperationException("Update tag is not supported.");
+    }
+
+    @Override
+    public boolean delete(Long id) {
         return jdbcTemplate.update(DELETE_ONE_SQL, id) > 0;
     }
 }

@@ -2,18 +2,9 @@ package com.epam.esm.dao;
 
 import com.epam.esm.domain.Certificate;
 
-import java.util.List;
-import java.util.Optional;
+public interface CertificateDao extends BaseDao<Certificate, Long> {
 
-public interface CertificateDao {
+    boolean attachTagToCertificate(long certificateId, long tagId);
 
-    boolean create(Certificate certificate);
-
-    List<Certificate> readAll();
-
-    Optional<Certificate> read(long id);
-
-    boolean update(Certificate certificate);
-
-    boolean delete(long id);
+    boolean detachTagFromCertificate(long certificateId, long tagId);
 }

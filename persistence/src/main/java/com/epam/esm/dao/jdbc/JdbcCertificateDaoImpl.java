@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,60 +21,81 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
 
     private static final String SELECT_ALL_SQL =
             "SELECT c.id, c.name, c.description, c.price, c.duration,"
-                    + "c.create_date, c.last_update_date FROM gift_certificate AS c;";
+                    + "c.create_date, c.last_update_date FROM gift_certificate c;";
 
     private static final String SELECT_ONE_SQL =
             "SELECT c.id, c.name, c.description, c.price, c.duration,"
-                    + "c.create_date, c.last_update_date FROM gift_certificate AS c WHERE c.id = ?";
+                    + "c.create_date, c.last_update_date FROM gift_certificate c WHERE c.id = ?";
 
     private static final String UPDATE_ONE_SQL =
-            "UPDATE gift_certificate AS c SET c.id = ?, c.name = ?, c.price = ?,"
+            "UPDATE gift_certificate c SET c.id = ?, c.name = ?, c.price = ?,"
                     + "c.duration = ?, c.last_update_date = ? WHERE c.id = ?";
 
     private static final String DELETE_ONE_SQL =
             "DELETE FROM gift_certificate WHERE gift_certificate.id = ?";
 
+    private static final String ATTACH_TAG_SQL =
+            "INSERT INTO gift_certificate_tag(certificate_id, tag_id) VALUES (?, ?);";
+
+    private static final String DETACH_TAG_SQL =
+            "DELETE FROM gift_certificate_tag WHERE certificate_id = ? AND tag_id = ?;";
+
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
+    private final RowMapper<Certificate> certificateRowMapper;
 
     @Autowired
-    public JdbcCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
+    public JdbcCertificateDaoImpl(JdbcTemplate jdbcTemplate,
+                                  RowMapper<Certificate> certificateRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.certificateRowMapper = certificateRowMapper;
     }
 
     @Override
     public boolean create(Certificate certificate) {
-        simpleJdbcInsert.withTableName("gift_certificate").usingGeneratedKeyColumns("id");
-        Number id = simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(certificate));
-        certificate.setId(id.longValue());
-        return jdbcTemplate.update(CREATE_ONE_SQL, certificate.getName(),
-                certificate.getDescription(), certificate.getPrice(), certificate.getDuration(),
-                certificate.getCreateDate(), Timestamp.from(Instant.now())) == 1;
+        return jdbcTemplate.update(CREATE_ONE_SQL,
+                certificate.getName(),
+                certificate.getDescription(),
+                certificate.getPrice(),
+                certificate.getDuration(),
+                certificate.getCreateDate(),
+                certificate.getLastUpdateDate()) == 1;
     }
 
     @Override
     public List<Certificate> readAll() {
-        return jdbcTemplate.query(SELECT_ALL_SQL,
-                new BeanPropertyRowMapper<>(Certificate.class));
+        return jdbcTemplate.query(SELECT_ALL_SQL, certificateRowMapper);
     }
 
     @Override
-    public Optional<Certificate> read(long id) {
-        List<Certificate> certificates = jdbcTemplate.query(SELECT_ONE_SQL,
-                new BeanPropertyRowMapper<>(Certificate.class), id);
+    public Optional<Certificate> readById(Long id) {
+        List<Certificate> certificates =
+                jdbcTemplate.query(SELECT_ONE_SQL, certificateRowMapper, id);
         return Optional.ofNullable(DataAccessUtils.uniqueResult(certificates));
     }
 
     @Override
     public boolean update(Certificate certificate) {
-        return jdbcTemplate.update(UPDATE_ONE_SQL, certificate.getName(),
-                certificate.getDescription(), certificate.getPrice(), certificate.getDuration(),
-                certificate.getCreateDate(), certificate.getId()) == 1;
+        return jdbcTemplate.update(UPDATE_ONE_SQL,
+                certificate.getName(),
+                certificate.getDescription(),
+                certificate.getPrice(),
+                certificate.getDuration(),
+                certificate.getCreateDate(),
+                certificate.getId()) == 1;
     }
 
     @Override
-    public boolean delete(long id) {
-        return jdbcTemplate.update(DELETE_ONE_SQL, id) > 0;
+    public boolean delete(Long id) {
+        return jdbcTemplate.update(DELETE_ONE_SQL, id) == 1;
+    }
+
+    @Override
+    public boolean attachTagToCertificate(long certificateId, long tagId) {
+        return jdbcTemplate.update(ATTACH_TAG_SQL, certificateId, tagId) == 1;
+    }
+
+    @Override
+    public boolean detachTagFromCertificate(long certificateId, long tagId) {
+        return jdbcTemplate.update(DETACH_TAG_SQL, certificateId, tagId) == 1;
     }
 }

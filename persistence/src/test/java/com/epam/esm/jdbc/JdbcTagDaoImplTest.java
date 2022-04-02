@@ -1,8 +1,8 @@
 package jdbc;
 
-import com.epam.esm.dao.config.DevDatasourceConfig;
 import com.epam.esm.dao.jdbc.JdbcTagDaoImpl;
 import com.epam.esm.domain.Tag;
+import config.TestConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,54 +16,53 @@ import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {DevDatasourceConfig.class})
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class JdbcTagDaoImplTest {
 
     @Autowired
     private JdbcTagDaoImpl tagDao;
-    private Tag firstTestTag;
-    private Tag thirdTestTag;
-    private List<Tag> tagList;
+    private Tag insertTag;
+    private Tag tag4;
+    private List<Tag> tagsInDB;
 
     @BeforeEach
     void setUp() {
-        firstTestTag = Tag.builder().id(1L).name("Test").build();
-        Tag secondTestTag = Tag.builder().id(11L).name("Romance").build();
-        thirdTestTag = Tag.builder().id(13L).name("14 February").build();
-        tagList = Arrays.asList(secondTestTag,
-                Tag.builder().id(12L).name("Mothers day").build(),
-                thirdTestTag,
-                Tag.builder().id(14L).name("Active").build());
+        insertTag = Tag.builder().name("Tag 5").build();
+        Tag tag2 = Tag.builder().id(2L).name("Tag 1").build();
+        Tag tag3 = Tag.builder().id(3L).name("Tag 2").build();
+        tag4 = Tag.builder().id(4L).name("Tag 3").build();
+        Tag tag5 = Tag.builder().id(5L).name("Tag 4").build();
+        tagsInDB = Arrays.asList(tag2, tag3, tag4, tag5);
     }
 
     @Test
     void findAllTagsTest() {
-        Assertions.assertEquals(tagList, tagDao.readAll());
+        Assertions.assertEquals(tagsInDB, tagDao.readAll());
     }
 
     @Test
     void addTagTest() {
-        Assertions.assertTrue(tagDao.create(firstTestTag));
+        Assertions.assertTrue(tagDao.create(insertTag));
     }
 
     @Test
     void findByIdTest() {
-        Assertions.assertEquals(tagDao.read(13).get(), thirdTestTag);
+        Assertions.assertEquals(tagDao.read(4L).get(), tag4);
     }
 
     @Test
     void findByIdWithInvalidIdTest() {
-        Assertions.assertFalse(tagDao.read(333).isPresent());
+        Assertions.assertFalse(tagDao.read(333L).isPresent());
     }
 
     @Test
     void removeTagPositiveTest() {
-        Assertions.assertTrue(tagDao.delete(11));
+        Assertions.assertTrue(tagDao.delete(2L));
     }
 
     @Test
     void removeUnknownTagTest() {
-        Assertions.assertFalse(tagDao.delete(444));
+        Assertions.assertFalse(tagDao.delete(444L));
     }
 }
