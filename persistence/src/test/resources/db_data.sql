@@ -4,10 +4,10 @@ VALUES (2, 'Certificate 2', 'This is 2 certificate description', 100.00, 3, '202
        (4, 'Certificate 4', 'This is 4 certificate description', 100.00, 3, '2022-04-01 00:01', '2022-04-01T00:02');
 
 INSERT INTO `tag`(id, name)
-VALUES (2, 'Tag 1'),
-       (3, 'Tag 2'),
-       (4, 'Tag 3'),
-       (5, 'Tag 4');
+VALUES (2, 'Tag 2'),
+       (3, 'Tag 3'),
+       (4, 'Tag 4'),
+       (5, 'Tag 5');
 
 
 INSERT INTO `gift_certificate_tag`(certificate_id, tag_id)

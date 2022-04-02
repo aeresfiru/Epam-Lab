@@ -28,41 +28,41 @@ class JdbcTagDaoImplTest {
 
     @BeforeEach
     void setUp() {
-        insertTag = Tag.builder().name("Tag 5").build();
-        Tag tag2 = Tag.builder().id(2L).name("Tag 1").build();
-        Tag tag3 = Tag.builder().id(3L).name("Tag 2").build();
-        tag4 = Tag.builder().id(4L).name("Tag 3").build();
-        Tag tag5 = Tag.builder().id(5L).name("Tag 4").build();
+        insertTag = Tag.builder().name("Tag 1").build();
+        Tag tag2 = Tag.builder().id(2L).name("Tag 2").build();
+        Tag tag3 = Tag.builder().id(3L).name("Tag 3").build();
+        tag4 = Tag.builder().id(4L).name("Tag 4").build();
+        Tag tag5 = Tag.builder().id(5L).name("Tag 5").build();
         tagsInDB = Arrays.asList(tag2, tag3, tag4, tag5);
     }
 
     @Test
-    void findAllTagsTest() {
+    void whenSearchingForAllTags_thenShouldReturnListOfTags() {
         Assertions.assertEquals(tagsInDB, tagDao.readAll());
     }
 
     @Test
-    void addTagTest() {
+    void whenAddTagThatDoesntExist_thenShouldReturnTrue() {
         Assertions.assertTrue(tagDao.create(insertTag));
     }
 
     @Test
-    void findByIdTest() {
+    void whenSearchingByIdThatExist_thenShouldReturnTagWithThisId() {
         Assertions.assertEquals(tagDao.readById(4L).get(), tag4);
     }
 
     @Test
-    void findByIdWithInvalidIdTest() {
+    void whenSearchingByIdThatDoesntExist_thenShouldReturnOptionalEmpty() {
         Assertions.assertFalse(tagDao.readById(333L).isPresent());
     }
 
     @Test
-    void removeTagPositiveTest() {
+    void whenRemoveTagThatExist_thenShouldReturnTrue() {
         Assertions.assertTrue(tagDao.delete(2L));
     }
 
     @Test
-    void removeUnknownTagTest() {
+    void whenRemoveTagThatDoesntExist_thenShouldReturnFalse() {
         Assertions.assertFalse(tagDao.delete(444L));
     }
 }

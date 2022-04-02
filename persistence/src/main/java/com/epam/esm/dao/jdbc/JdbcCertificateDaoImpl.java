@@ -1,11 +1,13 @@
 package com.epam.esm.dao.jdbc;
 
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.builder.CertificateQueryCreator;
+import com.epam.esm.dao.builder.QueryCertificateConfig;
 import com.epam.esm.domain.Certificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -97,5 +99,11 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     @Override
     public boolean detachTagFromCertificate(long certificateId, long tagId) {
         return jdbcTemplate.update(DETACH_TAG_SQL, certificateId, tagId) == 1;
+    }
+
+    @Override
+    public List<Certificate> query(QueryCertificateConfig config) {
+        PreparedStatementCreator creator = new CertificateQueryCreator(config);
+        return jdbcTemplate.query(creator, certificateRowMapper);
     }
 }

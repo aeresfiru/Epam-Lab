@@ -38,5 +38,4 @@ public class DatasourceConfig {
     public RowMapper<Tag> tagRowMapper() {
         return new BeanPropertyRowMapper<>(Tag.class);
     }
-
 }

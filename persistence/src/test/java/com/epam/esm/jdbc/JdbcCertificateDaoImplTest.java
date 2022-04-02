@@ -1,6 +1,7 @@
 package com.epam.esm.jdbc;
 
 import com.epam.esm.config.TestConfig;
+import com.epam.esm.dao.builder.QueryCertificateConfig;
 import com.epam.esm.dao.jdbc.JdbcCertificateDaoImpl;
 import com.epam.esm.domain.Certificate;
 import org.junit.jupiter.api.Assertions;
@@ -70,34 +71,48 @@ class JdbcCertificateDaoImplTest {
     }
 
     @Test
-    void findAllCertificatesTest() {
+    void whenSearchingForAllCertificates_thenShouldReturnListOfCertificates() {
         List<Certificate> certificates =
                 Arrays.asList(certificate2, certificate3, certificate4);
         Assertions.assertEquals(certificates, certificateDao.readAll());
     }
 
     @Test
-    void addCertificateTest() {
+    void whenAddCertificateThatDoesntExist_thenShouldReturnTrue() {
         Assertions.assertTrue(certificateDao.create(certificateToInsert));
     }
 
     @Test
-    void findByIdTest() {
+    void whenSearchingByIdThatExist_thenShouldReturnCertificateWithThisId() {
         Assertions.assertEquals(certificate3, certificateDao.readById(3L).get());
     }
 
     @Test
-    void findByIdWithInvalidIdTest() {
+    void whenSearchingByIdThatDoesntExist_thenShouldReturnOptionalEmpty() {
         Assertions.assertFalse(certificateDao.readById(111L).isPresent());
     }
 
     @Test
-    void removeCertificatePositiveTest() {
+    void whenRemoveCertificateThatExist_thenShouldReturnTrue() {
         Assertions.assertTrue(certificateDao.delete(2L));
     }
 
     @Test
-    void removeUnknownCertificateTest() {
+    void whenRemoveCertificateThatDoesntExist_thenShouldReturnFalse() {
         Assertions.assertFalse(certificateDao.delete(444L));
+    }
+
+    @Test
+    void whenQueryFoundEntities_thenShouldReturnNotEmptyList() {
+        QueryCertificateConfig config = QueryCertificateConfig.builder().tagParam("Tag 2").searchQuery("2").build();
+        List<Certificate> certificates = certificateDao.query(config);
+        Assertions.assertFalse(certificates.isEmpty());
+    }
+
+    @Test
+    void whenQueryNothingFound_thenShouldReturnEmptyCollection() {
+        QueryCertificateConfig config = QueryCertificateConfig.builder().tagParam("Tag 256").build();
+        List<Certificate> certificates = certificateDao.query(config);
+        Assertions.assertTrue(certificates.isEmpty());
     }
 }
