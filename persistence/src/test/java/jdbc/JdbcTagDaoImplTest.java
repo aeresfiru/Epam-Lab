@@ -1,6 +1,7 @@
-package com.epam.esm.dao.jdbc;
+package jdbc;
 
 import com.epam.esm.dao.config.DevDatasourceConfig;
+import com.epam.esm.dao.jdbc.JdbcTagDaoImpl;
 import com.epam.esm.domain.Tag;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

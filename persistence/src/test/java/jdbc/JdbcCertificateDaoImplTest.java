@@ -1,6 +1,7 @@
-package com.epam.esm.dao.jdbc;
+package jdbc;
 
 import com.epam.esm.dao.config.DevDatasourceConfig;
+import com.epam.esm.dao.jdbc.JdbcCertificateDaoImpl;
 import com.epam.esm.domain.Certificate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,6 @@ class JdbcCertificateDaoImplTest {
     private Certificate certificate2;
     private Certificate certificate3;
     private Certificate certificate4;
-    private List<Certificate> certificates;
 
     @BeforeEach
     void setUp() {
@@ -71,7 +71,8 @@ class JdbcCertificateDaoImplTest {
 
     @Test
     void findAllCertificatesTest() {
-        certificates = Arrays.asList(certificate2, certificate3, certificate4);
+        List<Certificate> certificates =
+                Arrays.asList(certificate2, certificate3, certificate4);
         Assertions.assertEquals(certificates, certificateDao.readAll());
     }
 
