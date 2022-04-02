@@ -1,8 +1,8 @@
-package jdbc;
+package com.epam.esm.jdbc;
 
+import com.epam.esm.config.TestConfig;
 import com.epam.esm.dao.jdbc.JdbcTagDaoImpl;
 import com.epam.esm.domain.Tag;
-import config.TestConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,12 +48,12 @@ class JdbcTagDaoImplTest {
 
     @Test
     void findByIdTest() {
-        Assertions.assertEquals(tagDao.read(4L).get(), tag4);
+        Assertions.assertEquals(tagDao.readById(4L).get(), tag4);
     }
 
     @Test
     void findByIdWithInvalidIdTest() {
-        Assertions.assertFalse(tagDao.read(333L).isPresent());
+        Assertions.assertFalse(tagDao.readById(333L).isPresent());
     }
 
     @Test

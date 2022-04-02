@@ -1,8 +1,8 @@
-package jdbc;
+package com.epam.esm.jdbc;
 
+import com.epam.esm.config.TestConfig;
 import com.epam.esm.dao.jdbc.JdbcCertificateDaoImpl;
 import com.epam.esm.domain.Certificate;
-import config.TestConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,12 +83,12 @@ class JdbcCertificateDaoImplTest {
 
     @Test
     void findByIdTest() {
-        Assertions.assertEquals(certificate3, certificateDao.read(3L).get());
+        Assertions.assertEquals(certificate3, certificateDao.readById(3L).get());
     }
 
     @Test
     void findByIdWithInvalidIdTest() {
-        Assertions.assertFalse(certificateDao.read(111L).isPresent());
+        Assertions.assertFalse(certificateDao.readById(111L).isPresent());
     }
 
     @Test
