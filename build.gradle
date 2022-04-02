@@ -12,7 +12,6 @@ allprojects {
 def springVersion = '5.3.16'
 def javaxVersion = '4.0.1'
 def lombokVersion = '1.18.22'
-def slf4jVersion = '1.7.35'
 def mysqlConnectorVersion = '8.0.28'
 def jacksonVersion = '2.13.0'
 def mockitoVersion = '4.4.0'
@@ -53,11 +52,11 @@ subprojects {
         // https://mvnrepository.com/artifact/org.springframework/spring-web
         implementation group: 'org.springframework', name: 'spring-web', version: springVersion
 
-        // https://mvnrepository.com/artifact/org.springframework/spring-jdbc
-        implementation group: 'org.springframework', name: 'spring-jdbc', version: springVersion
-
         // https://mvnrepository.com/artifact/org.springframework/spring-test
         testImplementation group: 'org.springframework', name: 'spring-test', version: springVersion
+
+        // https://mvnrepository.com/artifact/org.springframework/spring-jdbc
+        implementation group: 'org.springframework', name: 'spring-jdbc', version: springVersion
 
         // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
         compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: javaxVersion
@@ -70,12 +69,6 @@ subprojects {
 
         // https://mvnrepository.com/artifact/mysql/mysql-connector-java
         implementation group: 'mysql', name: 'mysql-connector-java', version: mysqlConnectorVersion
-
-        // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-        implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-
-        // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
-        testImplementation group: 'org.slf4j', name: 'slf4j-log4j12', version: slf4jVersion
 
         // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
         implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion

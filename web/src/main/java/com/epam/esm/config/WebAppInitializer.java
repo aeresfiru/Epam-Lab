@@ -1,18 +1,17 @@
 package com.epam.esm.config;
 
-import com.epam.esm.dao.config.ProdDatasourceConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[0];
+        return new Class[] {RootSpringConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {ProdDatasourceConfig.class, WebConfig.class};
+        return new Class[] {WebConfig.class};
     }
 
     @Override
