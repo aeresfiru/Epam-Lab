@@ -45,13 +45,13 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenCertificateFieldsAllGood_thenShouldNotGiveConstraintViolations() {
+    void When_CertificateFieldsAllGood_Expect_NotGiveConstraintViolations() {
         Set<ConstraintViolation<Certificate>> violations = validator.validate(certificate);
         assertTrue(violations.isEmpty());
     }
 
     @Test
-    void whenNameLessThanThreeCharactersLong_thenShouldGiveConstraintViolations() {
+    void When_NameLessThanThreeCharactersLong_Expect_GiveConstraintViolations() {
         certificate.setName("q");
         Set<ConstraintViolation<Certificate>> violations = validator
                 .validate(certificate);
@@ -61,7 +61,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenNameMoreThan100CharsLong_thenShouldGiveConstraintViolations() {
+    void When_NameMoreThan100CharsLong_Expect_GiveConstraintViolations() {
         String space101 = new String(new char[101]).replace('\0', ' ');
         certificate.setName(space101);
         Set<ConstraintViolation<Certificate>> violations = validator
@@ -72,7 +72,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenEmptyName_thenShouldGiveConstraintViolations() {
+    void When_EmptyName_Expect_GiveConstraintViolations() {
         certificate.setName("");
         Set<ConstraintViolation<Certificate>> violations = validator
                 .validate(certificate);
@@ -80,7 +80,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenDescLessThanTwentyCharsLong_thenShouldGiveConstraintViolations() {
+    void When_DescLessThanTwentyCharsLong_Expect_GiveConstraintViolations() {
         certificate.setDescription("Bad description");
         Set<ConstraintViolation<Certificate>> violations = validator
                 .validate(certificate);
@@ -90,7 +90,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenDescMoreThan500CharsLong_thenShouldGiveConstraintViolations() {
+    void When_DescMoreThan500CharsLong_Expect_GiveConstraintViolations() {
         String space501 = new String(new char[501]).replace('\0', ' ');
         certificate.setDescription(space501);
         Set<ConstraintViolation<Certificate>> violations = validator
@@ -101,7 +101,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenEmptyDesc_thenShouldGiveConstraintViolations() {
+    void When_EmptyDesc_Expect_GiveConstraintViolations() {
         certificate.setDescription("");
         Set<ConstraintViolation<Certificate>> violations = validator
                 .validate(certificate);
@@ -109,7 +109,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenPriceMoreThanThreeIntegerDigits_thenShouldGiveConstraintViolations() {
+    void When_PriceMoreThanThreeIntegerDigits_Expect_GiveConstraintViolations() {
         certificate.setPrice(new BigDecimal("1111.00"));
         Set<ConstraintViolation<Certificate>> violations = validator.validate(certificate);
         assertEquals(1, violations.size());
@@ -118,7 +118,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenPriceMoreThanTwoFractionalDigits_thenShouldGiveConstraintViolations() {
+    void When_PriceMoreThanTwoFractionalDigits_Expect_GiveConstraintViolations() {
         certificate.setPrice(new BigDecimal("11.001"));
         Set<ConstraintViolation<Certificate>> violations = validator.validate(certificate);
         assertEquals(1, violations.size());
@@ -127,7 +127,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenDurationMoreThanYear_thenShouldGiveConstraintViolations() {
+    void When_DurationMoreThanYear_Expect_GiveConstraintViolations() {
         certificate.setDuration((short) 366);
         Set<ConstraintViolation<Certificate>> violations = validator.validate(certificate);
         assertEquals(1, violations.size());
@@ -136,7 +136,7 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenDurationLesserThanThreeDays_thenShouldGiveConstraintViolations() {
+    void When_DurationLesserThanThreeDays_Expect_GiveConstraintViolations() {
         certificate.setDuration((short) 2);
         Set<ConstraintViolation<Certificate>> violations = validator.validate(certificate);
         assertEquals(1, violations.size());
@@ -145,21 +145,21 @@ class CertificateUnitTest {
     }
 
     @Test
-    void whenCreateDateIsNull_thenShouldGiveConstraintViolations() {
+    void When_CreateDateIsNull_Expect_GiveConstraintViolations() {
         certificate.setCreateDate(null);
         Set<ConstraintViolation<Certificate>> violations = validator.validate(certificate);
         assertEquals(1, violations.size());
     }
 
     @Test
-    void whenLastUpdateDateIsNull_thenShouldGiveConstraintViolations() {
+    void When_LastUpdateDateIsNull_Expect_GiveConstraintViolations() {
         certificate.setCreateDate(null);
         Set<ConstraintViolation<Certificate>> violations = validator.validate(certificate);
         assertEquals(1, violations.size());
     }
 
     @Test
-    void whenTagsIsEmpty_thenShouldGiveConstraintViolations() {
+    void When_TagsIsEmpty_Expect_GiveConstraintViolations() {
         certificate.setTags(new HashSet<>());
         Set<ConstraintViolation<Certificate>> violations = validator.validate(certificate);
         assertEquals(1, violations.size());

@@ -1,7 +1,7 @@
 package com.epam.esm.jdbc;
 
 import com.epam.esm.config.TestConfig;
-import com.epam.esm.dao.builder.QueryCertificateConfig;
+import com.epam.esm.dao.builder.CertificateQueryConfig;
 import com.epam.esm.dao.jdbc.JdbcCertificateDaoImpl;
 import com.epam.esm.domain.Certificate;
 import org.junit.jupiter.api.Assertions;
@@ -71,48 +71,62 @@ class JdbcCertificateDaoImplTest {
     }
 
     @Test
-    void whenSearchingForAllCertificates_thenShouldReturnListOfCertificates() {
+    void When_SearchingForAllCertificates_Expect_ReturnListOfCertificates() {
         List<Certificate> certificates =
                 Arrays.asList(certificate2, certificate3, certificate4);
         Assertions.assertEquals(certificates, certificateDao.readAll());
     }
 
     @Test
-    void whenAddCertificateThatDoesntExist_thenShouldReturnTrue() {
+    void When_AddCertificateThatDoesntExist_Expect_ReturnTrue() {
         Assertions.assertTrue(certificateDao.create(certificateToInsert));
     }
 
     @Test
-    void whenSearchingByIdThatExist_thenShouldReturnCertificateWithThisId() {
+    void When_SearchingByIdThatExist_Expect_ReturnCertificateWithThisId() {
         Assertions.assertEquals(certificate3, certificateDao.readById(3L).get());
     }
 
     @Test
-    void whenSearchingByIdThatDoesntExist_thenShouldReturnOptionalEmpty() {
+    void When_SearchingByIdThatDoesntExist_Expect_ReturnOptionalEmpty() {
         Assertions.assertFalse(certificateDao.readById(111L).isPresent());
     }
 
     @Test
-    void whenRemoveCertificateThatExist_thenShouldReturnTrue() {
+    void When_RemoveCertificateThatExist_Expect_ReturnTrue() {
         Assertions.assertTrue(certificateDao.delete(2L));
     }
 
     @Test
-    void whenRemoveCertificateThatDoesntExist_thenShouldReturnFalse() {
+    void When_RemoveCertificateThatDoesntExist_Expect_ReturnFalse() {
         Assertions.assertFalse(certificateDao.delete(444L));
     }
 
     @Test
-    void whenQueryFoundEntities_thenShouldReturnNotEmptyList() {
-        QueryCertificateConfig config = QueryCertificateConfig.builder().tagParam("Tag 2").searchQuery("2").build();
+    void When_QueryFoundEntities_Expect_ReturnNotEmptyList() {
+        CertificateQueryConfig config = CertificateQueryConfig.builder().tagParam("Tag 2").searchQuery("2").build();
         List<Certificate> certificates = certificateDao.query(config);
         Assertions.assertFalse(certificates.isEmpty());
     }
 
     @Test
-    void whenQueryNothingFound_thenShouldReturnEmptyCollection() {
-        QueryCertificateConfig config = QueryCertificateConfig.builder().tagParam("Tag 256").build();
+    void When_QueryNothingFound_Expect_ReturnEmptyCollection() {
+        CertificateQueryConfig config = CertificateQueryConfig.builder().tagParam("Tag 256").build();
         List<Certificate> certificates = certificateDao.query(config);
         Assertions.assertTrue(certificates.isEmpty());
+    }
+
+    @Test
+    void When_AttachTagSuccess_Expect_ReturnTrue() {
+        long tagId = 3L;
+        long certificateId = certificate2.getId();
+        Assertions.assertTrue(certificateDao.attachTagToCertificate(certificateId, tagId));
+    }
+
+    @Test
+    void When_DetachTagSuccess_Expect_ReturnTrue() {
+        long tagId = 2L;
+        long certificateId = certificate2.getId();
+        Assertions.assertTrue(certificateDao.detachTagFromCertificate(certificateId, tagId));
     }
 }

@@ -37,32 +37,32 @@ class JdbcTagDaoImplTest {
     }
 
     @Test
-    void whenSearchingForAllTags_thenShouldReturnListOfTags() {
+    void When_SearchingForAllTags_Expect_ReturnListOfTags() {
         Assertions.assertEquals(tagsInDB, tagDao.readAll());
     }
 
     @Test
-    void whenAddTagThatDoesntExist_thenShouldReturnTrue() {
+    void When_AddTagThatDoesntExist_Expect_ReturnTrue() {
         Assertions.assertTrue(tagDao.create(insertTag));
     }
 
     @Test
-    void whenSearchingByIdThatExist_thenShouldReturnTagWithThisId() {
+    void When_SearchingByIdThatExist_Expect_ReturnTagWithThisId() {
         Assertions.assertEquals(tagDao.readById(4L).get(), tag4);
     }
 
     @Test
-    void whenSearchingByIdThatDoesntExist_thenShouldReturnOptionalEmpty() {
+    void When_SearchingByIdThatDoesntExist_Expect_ReturnOptionalEmpty() {
         Assertions.assertFalse(tagDao.readById(333L).isPresent());
     }
 
     @Test
-    void whenRemoveTagThatExist_thenShouldReturnTrue() {
+    void When_RemoveTagThatExist_Expect_ReturnTrue() {
         Assertions.assertTrue(tagDao.delete(2L));
     }
 
     @Test
-    void whenRemoveTagThatDoesntExist_thenShouldReturnFalse() {
+    void When_RemoveTagThatDoesntExist_Expect_ReturnFalse() {
         Assertions.assertFalse(tagDao.delete(444L));
     }
 }

@@ -1,8 +1,8 @@
 package com.epam.esm.dao.jdbc;
 
 import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.builder.CertificateQueryConfig;
 import com.epam.esm.dao.builder.CertificateQueryCreator;
-import com.epam.esm.dao.builder.QueryCertificateConfig;
 import com.epam.esm.domain.Certificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
@@ -102,7 +102,7 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> query(QueryCertificateConfig config) {
+    public List<Certificate> query(CertificateQueryConfig config) {
         PreparedStatementCreator creator = new CertificateQueryCreator(config);
         return jdbcTemplate.query(creator, certificateRowMapper);
     }

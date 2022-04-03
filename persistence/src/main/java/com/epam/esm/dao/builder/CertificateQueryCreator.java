@@ -10,9 +10,11 @@ public class CertificateQueryCreator extends QueryCreator {
             "SELECT c.id, c.name, c.description, c.price, c.duration," +
             "c.create_date, c.last_update_date FROM gift_certificate c";
 
+    private static final String TAG_CERTIFICATE_JOIN_QUERY =
+            "gift_certificate_tag gct on c.id = gct.certificate_id";
+
     private static final String TAG_JOIN_QUERY =
-            "JOIN gift_certificate_tag gct on c.id = gct.certificate_id\n" +
-            "JOIN tag t on t.id = gct.tag_id";
+            "tag t on t.id = gct.tag_id";
 
     private static final String TAG_NAME_QUERY =
             "t.name LIKE CONCAT('%', ? ,' %')";
@@ -23,14 +25,11 @@ public class CertificateQueryCreator extends QueryCreator {
     private static final String CERTIFICATE_DESCRIPTION_QUERY =
             "c.description LIKE CONCAT('%', ? ,' %')";
 
-    private final QueryCertificateConfig config;
+    private final CertificateQueryConfig config;
 
-    public CertificateQueryCreator(QueryCertificateConfig config) {
+    public CertificateQueryCreator(CertificateQueryConfig config) {
         this.config = config;
     }
-
-    private StringBuilder builder;
-    private boolean hasWhereStatement = false;
 
     @Override
     public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -44,11 +43,9 @@ public class CertificateQueryCreator extends QueryCreator {
     protected String buildQuery() {
         if (config.getTagParam() != null) {
             this.attachTagQueryPart();
-            hasWhereStatement = true;
         }
         if (config.getSearchQuery() != null) {
             this.attachSearchQueryPart();
-            hasWhereStatement = true;
         }
         if (config.getParameterSortingTypeMap() != null) {
             this.attachSortingType();
@@ -56,45 +53,7 @@ public class CertificateQueryCreator extends QueryCreator {
         return builder.toString();
     }
 
-    public void attachSearchQueryPart() {
-        builder.append(WHITESPACE)
-                .append(defineWhereOrAnd())
-                .append(WHITESPACE)
-                .append(CERTIFICATE_NAME_QUERY)
-                .append(WHITESPACE)
-                .append(OR)
-                .append(WHITESPACE)
-                .append(CERTIFICATE_DESCRIPTION_QUERY);
-    }
-
-    private void attachTagQueryPart() {
-        builder.append(WHITESPACE)
-                .append(TAG_JOIN_QUERY)
-                .append(WHITESPACE)
-                .append(WHERE)
-                .append(WHITESPACE)
-                .append(TAG_NAME_QUERY);
-    }
-
-    private void attachSortingType() {
-        builder.append(ORDER_BY);
-        this.attachSortingParameters();
-    }
-
-    private void attachSortingParameters() {
-        config.getParameterSortingTypeMap()
-                .forEach(this::attachSortingParameter);
-        builder.deleteCharAt(builder.lastIndexOf(","));
-    }
-
-    private void attachSortingParameter(String key, SortingType value) {
-        builder.append(WHITESPACE)
-                .append(key)
-                .append(WHITESPACE)
-                .append(value.name())
-                .append(",");
-    }
-
+    @Override
     protected void setParameters(PreparedStatement st) throws SQLException {
         int index = 1;
         if (config.getTagParam() != null) {
@@ -106,11 +65,30 @@ public class CertificateQueryCreator extends QueryCreator {
         }
     }
 
+    public void attachSearchQueryPart() {
+        if (defineWhereOrAnd().equals("WHERE")) {
+            this.where(CERTIFICATE_NAME_QUERY);
+        } else {
+            this.and(CERTIFICATE_NAME_QUERY);
+        }
+        this.or(CERTIFICATE_DESCRIPTION_QUERY);
+    }
+
+    private void attachTagQueryPart() {
+        this.join(TAG_CERTIFICATE_JOIN_QUERY, JoinType.INNER)
+                .join(TAG_JOIN_QUERY, JoinType.INNER)
+                .where(TAG_NAME_QUERY);
+    }
+
+    private void attachSortingType() {
+        this.orderBy(config.getParameterSortingTypeMap());
+    }
+
     private String defineWhereOrAnd() {
         if (hasWhereStatement) {
-            return AND;
+            return "AND";
         } else {
-            return WHERE;
+            return "WHERE";
         }
     }
 

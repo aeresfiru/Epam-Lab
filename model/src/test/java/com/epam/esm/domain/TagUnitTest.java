@@ -34,13 +34,13 @@ class TagUnitTest {
     }
 
     @Test
-    void whenTagFieldsAllGood_thenShouldNotGiveConstraintViolations() {
+    void When_TagFieldsAllGood_Expect_NotGiveConstraintViolations() {
         Set<ConstraintViolation<Tag>> violations = validator.validate(tag);
         assertTrue(violations.isEmpty());
     }
 
     @Test
-    void whenNameLessThanThreeCharactersLong_thenShouldGiveConstraintViolations() {
+    void When_NameLessThanThreeCharactersLong_Expect_GiveConstraintViolations() {
         tag.setName("q");
         Set<ConstraintViolation<Tag>> violations = validator
                 .validate(tag);
@@ -50,7 +50,7 @@ class TagUnitTest {
     }
 
     @Test
-    void whenNameMoreThan100CharactersLong_thenShouldGiveConstraintViolations() {
+    void When_NameMoreThan100CharactersLong_Expect_GiveConstraintViolations() {
         String space101 = new String(new char[101]).replace('\0', ' ');
         tag.setName(space101);
         Set<ConstraintViolation<Tag>> violations = validator
