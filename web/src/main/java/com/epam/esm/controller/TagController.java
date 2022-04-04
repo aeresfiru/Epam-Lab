@@ -4,13 +4,13 @@ import com.epam.esm.domain.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/tags")
 public class TagController {
@@ -25,6 +25,24 @@ public class TagController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Tag> readAll() {
-        return tagService.findAll();
+        return tagService.readAll();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Tag readById(@PathVariable Long id) {
+        return tagService.readById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Tag create(@Valid @RequestBody Tag tag) {
+        return tagService.createTag(tag);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        tagService.deleteTag(id);
     }
 }

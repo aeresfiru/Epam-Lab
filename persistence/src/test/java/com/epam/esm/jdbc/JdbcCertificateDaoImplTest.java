@@ -1,7 +1,9 @@
 package com.epam.esm.jdbc;
 
 import com.epam.esm.config.TestConfig;
-import com.epam.esm.dao.builder.CertificateQueryConfig;
+import com.epam.esm.dao.builder.*;
+import com.epam.esm.dao.builder.select.CertificateSelectQueryConfig;
+import com.epam.esm.dao.builder.update.CertificateUpdateQueryConfig;
 import com.epam.esm.dao.jdbc.JdbcCertificateDaoImpl;
 import com.epam.esm.domain.Certificate;
 import org.junit.jupiter.api.Assertions;
@@ -16,7 +18,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -83,6 +87,22 @@ class JdbcCertificateDaoImplTest {
     }
 
     @Test
+    void When_UpdateCertificateThatExist_Expect_ReturnTrue() {
+        certificate4.setName("Pasha is gay");
+        certificate4.setDuration((short) 10);
+        Map<String, String> params = new HashMap<>();
+        params.put("name", certificate4.getName());
+        params.put("duration", String.valueOf(certificate4.getDuration()));
+        CertificateUpdateQueryConfig config = CertificateUpdateQueryConfig
+                .builder()
+                .paramsValueMap(params)
+                .certificateId(certificate4.getId())
+                .build();
+        Assertions.assertTrue(certificateDao.update(config));
+    }
+
+
+    @Test
     void When_SearchingByIdThatExist_Expect_ReturnCertificateWithThisId() {
         Assertions.assertEquals(certificate3, certificateDao.readById(3L).get());
     }
@@ -104,14 +124,19 @@ class JdbcCertificateDaoImplTest {
 
     @Test
     void When_QueryFoundEntities_Expect_ReturnNotEmptyList() {
-        CertificateQueryConfig config = CertificateQueryConfig.builder().tagParam("Tag 2").searchQuery("2").build();
+        CertificateSelectQueryConfig config = CertificateSelectQueryConfig.builder().tagParam("Tag 2").searchQuery("2").build();
         List<Certificate> certificates = certificateDao.query(config);
         Assertions.assertFalse(certificates.isEmpty());
     }
 
     @Test
     void When_QueryNothingFound_Expect_ReturnEmptyCollection() {
-        CertificateQueryConfig config = CertificateQueryConfig.builder().tagParam("Tag 256").build();
+        Map<String, SortingType> paramSortMap = new HashMap<>();
+        paramSortMap.put("c.name", SortingType.ASC);
+        CertificateSelectQueryConfig config = CertificateSelectQueryConfig.builder()
+                .parameterSortingTypeMap(paramSortMap)
+                .tagParam("Tag 256")
+                .build();
         List<Certificate> certificates = certificateDao.query(config);
         Assertions.assertTrue(certificates.isEmpty());
     }

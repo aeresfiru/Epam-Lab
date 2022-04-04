@@ -5,8 +5,8 @@ CREATE TABLE `gift_certificate`
     `description`      varchar(500)   NOT NULL,
     `price`            decimal(10, 2) NOT NULL,
     `duration`         smallint       NOT NULL,
-    `create_date`      timestamp      NOT NULL default CURRENT_TIMESTAMP(),
-    `last_update_date` timestamp      NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `create_date`      timestamp      default CURRENT_TIMESTAMP(),
+    `last_update_date` timestamp      default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT `PK_gift_certificate`
         PRIMARY KEY (`id`)
 );

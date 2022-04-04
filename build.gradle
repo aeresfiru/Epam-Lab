@@ -36,10 +36,6 @@ subprojects {
     }
 
     dependencies {
-        if (project.name != 'util') {
-            implementation project(':util')
-        }
-
         // https://mvnrepository.com/artifact/org.springframework/spring-context
         implementation group: 'org.springframework', name: 'spring-context', version: springVersion
 
@@ -77,7 +73,7 @@ subprojects {
         testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
 
         // https://mvnrepository.com/artifact/com.h2database/h2
-        testImplementation group: 'com.h2database', name: 'h2', version: h2Version
+        implementation group: 'com.h2database', name: 'h2', version: h2Version
 
         // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
@@ -85,7 +81,14 @@ subprojects {
         // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
 
-        implementation group: 'org.hibernate', name: 'hibernate-validator', version: hibernateValidatorVersion
+        // https://mvnrepository.com/artifact/javax.validation/validation-api
+        implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
+        // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
+        implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '7.0.4.Final'
+
+        // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
     }
 
     test {

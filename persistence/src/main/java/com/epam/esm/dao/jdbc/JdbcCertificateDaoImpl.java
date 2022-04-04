@@ -1,8 +1,10 @@
 package com.epam.esm.dao.jdbc;
 
 import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.dao.builder.CertificateQueryConfig;
-import com.epam.esm.dao.builder.CertificateQueryCreator;
+import com.epam.esm.dao.builder.select.CertificateSelectQueryConfig;
+import com.epam.esm.dao.builder.select.CertificateSelectQueryCreator;
+import com.epam.esm.dao.builder.update.CertificateUpdateQueryConfig;
+import com.epam.esm.dao.builder.update.CertificateUpdateQueryCreator;
 import com.epam.esm.domain.Certificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
@@ -87,6 +89,12 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     }
 
     @Override
+    public boolean update(CertificateUpdateQueryConfig config) {
+        PreparedStatementCreator creator = new CertificateUpdateQueryCreator(config);
+        return jdbcTemplate.update(creator) == 1;
+    }
+
+    @Override
     public boolean delete(Long id) {
         return jdbcTemplate.update(DELETE_ONE_SQL, id) == 1;
     }
@@ -102,8 +110,8 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> query(CertificateQueryConfig config) {
-        PreparedStatementCreator creator = new CertificateQueryCreator(config);
+    public List<Certificate> query(CertificateSelectQueryConfig config) {
+        PreparedStatementCreator creator = new CertificateSelectQueryCreator(config);
         return jdbcTemplate.query(creator, certificateRowMapper);
     }
 }

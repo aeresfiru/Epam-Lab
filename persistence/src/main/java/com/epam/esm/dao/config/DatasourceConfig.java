@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm")
-@Import({DevDatasourceConfig.class, ProdDatasourceConfig.class})
+@Import({ProdDatasourceConfig.class})
 public class DatasourceConfig {
 
     @Bean
