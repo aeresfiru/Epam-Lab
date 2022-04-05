@@ -1,7 +1,7 @@
 package com.epam.esm.jdbc;
 
 import com.epam.esm.config.TestConfig;
-import com.epam.esm.dao.builder.*;
+import com.epam.esm.dao.builder.SortingType;
 import com.epam.esm.dao.builder.select.CertificateSelectQueryConfig;
 import com.epam.esm.dao.builder.update.CertificateUpdateQueryConfig;
 import com.epam.esm.dao.jdbc.JdbcCertificateDaoImpl;
@@ -90,7 +90,7 @@ class JdbcCertificateDaoImplTest {
     void When_UpdateCertificateThatExist_Expect_ReturnTrue() {
         certificate4.setName("Pasha is gay");
         certificate4.setDuration((short) 10);
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", certificate4.getName());
         params.put("duration", String.valueOf(certificate4.getDuration()));
         CertificateUpdateQueryConfig config = CertificateUpdateQueryConfig

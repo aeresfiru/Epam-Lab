@@ -11,17 +11,21 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
 public class JdbcCertificateDaoImpl implements CertificateDao {
 
     private static final String CREATE_ONE_SQL =
-            "INSERT INTO gift_certificate(name, description, price, duration,"
-                    + "create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";
+            "INSERT INTO gift_certificate(name, description, price, duration) VALUES (?, ?, ?, ?)";
 
     private static final String SELECT_ALL_SQL =
             "SELECT c.id, c.name, c.description, c.price, c.duration,"
@@ -56,13 +60,17 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
 
     @Override
     public boolean create(Certificate certificate) {
-        return jdbcTemplate.update(CREATE_ONE_SQL,
-                certificate.getName(),
-                certificate.getDescription(),
-                certificate.getPrice(),
-                certificate.getDuration(),
-                certificate.getCreateDate(),
-                certificate.getLastUpdateDate()) == 1;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        boolean isCreated = jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(CREATE_ONE_SQL, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, certificate.getName());
+            ps.setString(2, certificate.getDescription());
+            ps.setBigDecimal(3, certificate.getPrice());
+            ps.setShort(4, certificate.getDuration());
+            return ps;
+        }, keyHolder) == 1;
+        certificate.setId((Long) keyHolder.getKeys().get("id"));
+        return isCreated;
     }
 
     @Override

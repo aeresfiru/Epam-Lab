@@ -1,7 +1,6 @@
 package com.epam.esm.dao.builder.update;
 
 import com.epam.esm.dao.builder.AbstractQueryCreator;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 
 import java.util.Map;
@@ -19,15 +18,11 @@ public abstract class UpdateQueryCreator extends AbstractQueryCreator
         return this;
     }
 
-    protected UpdateQueryCreator set(Map<String, String> paramValues) {
+    protected UpdateQueryCreator set(Map<String, Object> paramValues) {
         this.appendToBuilder(SET);
         paramValues.forEach((k, v) -> {
-            if (StringUtils.isNumeric(v))
-                this.appendToBuilder(k, EQUAL, v, COMMA);
-            else {
-                String value = QUOTE + v + QUOTE;
-                this.appendToBuilder(k, EQUAL, value, COMMA);
-            }
+            String value = QUOTE + v + QUOTE;
+            this.appendToBuilder(k, EQUAL, value, COMMA);
         });
         this.removeLastComma();
         return this;

@@ -1,20 +1,20 @@
 package com.epam.esm.service;
 
 import com.epam.esm.domain.Certificate;
-import com.epam.esm.service.dto.CertificateDTO;
+import com.epam.esm.service.dto.CertificateDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CertificateService {
 
-    Certificate createCertificate(Certificate certificate);
+    CertificateDto createCertificate(CertificateDto certificate);
 
-    List<Certificate> readAllCertificates();
+    List<CertificateDto> readAllCertificates();
 
-    Certificate readById(Long id);
+    CertificateDto readById(Long id);
 
-    Certificate updateCertificate(CertificateDTO certificate, Long id);
+    CertificateDto updateCertificate(CertificateDto certificate, Long id);
 
     void deleteCertificate(Long id);
 

@@ -20,13 +20,13 @@ public class CertificateUpdateQueryCreator extends UpdateQueryCreator {
         String query = this.buildQuery();
         PreparedStatement st = con.prepareStatement(query);
         st.setObject(1, config.getCertificateId());
-        System.out.println(st);
         return st;
     }
 
     protected String buildQuery() {
         this.builder = new StringBuilder();
         this.update(TABLE_NAME);
+        config.getParamsValueMap().remove("tags");
         this.set(config.getParamsValueMap());
         this.where(ID_EQ_ID);
         return builder.toString();
