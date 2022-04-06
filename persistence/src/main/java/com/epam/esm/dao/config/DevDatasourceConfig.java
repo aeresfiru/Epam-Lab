@@ -5,32 +5,35 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
 @Configuration
-@Profile("dev")
 @PropertySource("classpath:application-dev.properties")
-public class DevDatasourceConfig {
+@Profile("dev")
+public class DevDatasourceConfig extends DatasourceConfig {
 
-    @Value("${script.structure}")
-    private String dbStructureScript;
+    @Value("${db.url}")
+    private String url;
 
-    @Value("${script.data}")
-    private String dbDataScript;
+    @Value("${db.user}")
+    private String user;
 
-    @Value("${encoding}")
-    private String encoding;
+    @Value("${db.password}")
+    private String password;
+
+    @Value("${db.driver}")
+    private String driver;
 
     @Bean
     public DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .setScriptEncoding(encoding)
-                .addScript(dbStructureScript)
-                .addScript(dbDataScript)
-                .build();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(driver);
+        dataSource.setUrl(url);
+        dataSource.setUsername(user);
+        dataSource.setPassword(password);
+
+        return dataSource;
     }
 }

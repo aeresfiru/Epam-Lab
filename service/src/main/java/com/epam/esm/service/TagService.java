@@ -6,5 +6,11 @@ import java.util.List;
 
 public interface TagService {
 
-    List<Tag> findAll();
+    List<Tag> readAll();
+
+    Tag readById(Long id);
+
+    Tag createTag(Tag tag);
+
+    void deleteTag(Long id);
 }

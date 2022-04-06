@@ -6,7 +6,6 @@ import com.epam.esm.domain.Tag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,7 +15,6 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm")
-@Import({DevDatasourceConfig.class, ProdDatasourceConfig.class})
 public class DatasourceConfig {
 
     @Bean

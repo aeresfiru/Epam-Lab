@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.*;
 
 @Repository
 public class JdbcTagDaoImpl implements TagDao {
@@ -26,6 +29,13 @@ public class JdbcTagDaoImpl implements TagDao {
     private static final String DELETE_ONE_SQL =
             "DELETE FROM tag WHERE tag.id = ?;";
 
+    private static final String SELECT_BY_CERTIFICATE_ID_SQL =
+            "SELECT tag.id, tag.name FROM tag " +
+                    "JOIN gift_certificate_tag gct on tag.id = gct.tag_id WHERE gct.certificate_id = ?;";
+
+    private static final String SELECT_BY_NAME_SQL =
+            "SELECT tag.id, tag.name FROM tag WHERE tag.name = ?";
+
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Tag> tagRowMapper;
 
@@ -38,7 +48,14 @@ public class JdbcTagDaoImpl implements TagDao {
 
     @Override
     public boolean create(Tag tag) {
-        return jdbcTemplate.update(CREATE_ONE_SQL, tag.getName()) == 1;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        boolean isCreated = jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(CREATE_ONE_SQL, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, tag.getName());
+            return ps;
+        }, keyHolder) == 1;
+        tag.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        return isCreated;
     }
 
     @Override
@@ -60,5 +77,16 @@ public class JdbcTagDaoImpl implements TagDao {
     @Override
     public boolean delete(Long id) {
         return jdbcTemplate.update(DELETE_ONE_SQL, id) > 0;
+    }
+
+    @Override
+    public Set<Tag> readByCertificateId(long certificateId) {
+        return new HashSet<>(jdbcTemplate.query(SELECT_BY_CERTIFICATE_ID_SQL, tagRowMapper, certificateId));
+    }
+
+    @Override
+    public Optional<Tag> readByName(String name) {
+        List<Tag> tags = jdbcTemplate.query(SELECT_BY_NAME_SQL, tagRowMapper, name);
+        return Optional.ofNullable(DataAccessUtils.uniqueResult(tags));
     }
 }

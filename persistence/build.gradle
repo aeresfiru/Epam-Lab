@@ -1,3 +1,11 @@
+def h2Version = '2.1.210'
+def mysqlConnectorVersion = '8.0.28'
 dependencies {
     implementation project(':model')
+
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    implementation group: 'com.h2database', name: 'h2', version: h2Version
+
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    implementation group: 'mysql', name: 'mysql-connector-java', version: mysqlConnectorVersion
 }
