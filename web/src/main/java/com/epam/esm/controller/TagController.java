@@ -4,13 +4,10 @@ import com.epam.esm.domain.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@Validated
 @RestController
 @RequestMapping("/tags")
 public class TagController {
@@ -36,7 +33,7 @@ public class TagController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Tag create(@Valid @RequestBody Tag tag) {
+    public Tag create(@RequestBody Tag tag) {
         return tagService.createTag(tag);
     }
 

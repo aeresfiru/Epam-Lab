@@ -2,18 +2,14 @@ package com.epam.esm.controller;
 
 import com.epam.esm.domain.Certificate;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.dto.CertificateDto;
+import com.epam.esm.service.dto.impl.CertificateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-@Validated
 @RestController
 @RequestMapping("/certificates")
 public class CertificateController {
@@ -33,7 +29,7 @@ public class CertificateController {
 
     @GetMapping("/query")
     @ResponseStatus(HttpStatus.OK)
-    public List<Certificate> readAllBySearchQuery(@RequestParam Optional<String> searchQuery,
+    public List<CertificateDto> readAllBySearchQuery(@RequestParam Optional<String> searchQuery,
                                                   @RequestParam Optional<String> tagName) {
         return service.readCertificateByFilterQuery(searchQuery, tagName);
     }
@@ -51,12 +47,8 @@ public class CertificateController {
     }
 
     @PatchMapping("/{id}")
-    public CertificateDto update(@Valid @RequestBody CertificateDto certificate,
-                                 BindingResult result,
-                                 @PathVariable Long id) throws Exception {
-        if (result.hasErrors()) {
-            throw new Exception("Wrong certificate params");
-        }
+    public CertificateDto update(@RequestBody CertificateDto certificate,
+                                 @PathVariable Long id) {
         return service.updateCertificate(certificate, id);
     }
 
