@@ -64,7 +64,7 @@ public class CertificateServiceImpl implements CertificateService {
             entity.setTags(dto.getTags());
         }
         certificateDao.create(entity);
-        this.linkTags(entity);
+        this.linkTags(dto, entity.getId());
         return this.readById(entity.getId());
     }
 
@@ -92,8 +92,8 @@ public class CertificateServiceImpl implements CertificateService {
         certificateValidator.validateForUpdate(entity);
         entity.getTags().forEach(tagValidator::validate);
         certificateDao.update(config);
-        this.unlinkTags(entity);
-        this.linkTags(entity);
+        this.unlinkTags(this.readById(id));
+        this.linkTags(dto, id);
         return this.readById(id);
     }
 
@@ -126,24 +126,24 @@ public class CertificateServiceImpl implements CertificateService {
      * The method associates a tag and a certificate in the database.
      * If such tag does not exist in the database, creates it.
      */
-    private void linkTags(Certificate certificate) {
-        if (certificate.getTags() != null) {
-            certificate.getTags().stream()
+    private void linkTags(CertificateDto dto, Long id) {
+        if (dto.getTags() != null) {
+            dto.getTags().stream()
                     .filter(tag -> !tagDao.readByName(tag.getName()).isPresent())
                     .forEach(tagDao::create);
             Set<Tag> tags = new HashSet<>();
-            certificate.getTags().forEach(t -> tags.add(tagDao.readByName(t.getName())
+            dto.getTags().forEach(t -> tags.add(tagDao.readByName(t.getName())
                     .orElseThrow(() -> new EntityNotFoundException(t.getId(),
                             ErrorCode.TAG_ERROR))));
             tags.forEach(t ->
-                    certificateDao.attachTagToCertificate(certificate.getId(), t.getId()));
+                    certificateDao.attachTagToCertificate(id, t.getId()));
         }
     }
 
-    private void unlinkTags(Certificate certificate) {
-        certificate.getTags()
+    private void unlinkTags(CertificateDto dto) {
+        dto.getTags()
                 .stream().filter(t -> t.getId() != null)
-                .forEach(t -> certificateDao.detachTagFromCertificate(certificate.getId(), t.getId()));
+                .forEach(t -> certificateDao.detachTagFromCertificate(dto.getId(), t.getId()));
     }
 
     private CertificateUpdateQueryConfig createCertificateConfigForUpdate(CertificateDto certificate, Long id) {
