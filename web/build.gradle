@@ -1,5 +1,10 @@
+def javaxVersion = '4.0.1'
+
 dependencies {
     implementation project(':model')
     implementation project(':persistence')
     implementation project(':service')
+
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: javaxVersion
 }
