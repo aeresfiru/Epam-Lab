@@ -1,6 +1,7 @@
-package com.epam.esm.service.dto;
+package com.epam.esm.service.dto.impl;
 
 import com.epam.esm.domain.Certificate;
+import com.epam.esm.service.dto.DtoMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 

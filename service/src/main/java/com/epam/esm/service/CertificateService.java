@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.domain.Certificate;
-import com.epam.esm.service.dto.CertificateDto;
+import com.epam.esm.service.dto.impl.CertificateDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +18,6 @@ public interface CertificateService {
 
     void deleteCertificate(Long id);
 
-    List<Certificate> readCertificateByFilterQuery(Optional<String> searchQuery,
+    List<CertificateDto> readCertificateByFilterQuery(Optional<String> searchQuery,
                                                    Optional<String> tagName);
 }
