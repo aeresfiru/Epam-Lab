@@ -9,6 +9,10 @@ public class CertificateUpdateQueryCreator extends UpdateQueryCreator {
     private static final String TABLE_NAME = "gift_certificate";
     private static final String ID_EQ_ID = "id = ?";
 
+    //tags and id need to be removed because we don't include it in SET statement
+    private static final String TAGS = "tags";
+    private static final String ID = "id";
+
     private final CertificateUpdateQueryConfig config;
 
     public CertificateUpdateQueryCreator(CertificateUpdateQueryConfig config) {
@@ -24,11 +28,15 @@ public class CertificateUpdateQueryCreator extends UpdateQueryCreator {
     }
 
     protected String buildQuery() {
-        this.builder = new StringBuilder();
+        this.removeUnnecessaryFieldsForUpdate();
         this.update(TABLE_NAME);
-        config.getParamsValueMap().remove("tags");
         this.set(config.getParamsValueMap());
         this.where(ID_EQ_ID);
         return builder.toString();
+    }
+
+    private void removeUnnecessaryFieldsForUpdate() {
+        config.getParamsValueMap().remove(TAGS);
+        config.getParamsValueMap().remove(ID);
     }
 }

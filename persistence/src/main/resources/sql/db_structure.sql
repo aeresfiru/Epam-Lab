@@ -17,7 +17,7 @@ CREATE TABLE `gift_certificate`
 CREATE TABLE `tag`
 (
     `id`   bigint      NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL UNIQUE,
+    `name` varchar(20) NOT NULL UNIQUE,
     CONSTRAINT `PK_tag`
         PRIMARY KEY (`id`)
 );

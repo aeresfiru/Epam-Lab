@@ -10,7 +10,6 @@ VALUES (2, 'Tag 2'),
        (4, 'Tag 4'),
        (5, 'Tag 5');
 
-
 INSERT INTO `gift_certificate_tag`(certificate_id, tag_id)
 VALUES (2, 2),
        (2, 4),

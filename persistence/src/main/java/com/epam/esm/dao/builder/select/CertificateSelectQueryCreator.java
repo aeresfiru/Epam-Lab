@@ -17,13 +17,13 @@ public class CertificateSelectQueryCreator extends SelectQueryCreator {
             "tag t on t.id = gct.tag_id";
 
     private static final String TAG_NAME_QUERY =
-            "t.name LIKE CONCAT('%', ? ,' %')";
+            "t.name LIKE CONCAT('%', ?, '%')";
 
     private static final String CERTIFICATE_NAME_QUERY =
-            "c.name LIKE CONCAT('%', ? ,' %')";
+            "(c.name LIKE CONCAT('%', ?, '%')";
 
     private static final String CERTIFICATE_DESCRIPTION_QUERY =
-            "c.description LIKE CONCAT('%', ? ,' %')";
+            "c.description LIKE CONCAT('%', ?, '%'))";
 
     private final CertificateSelectQueryConfig config;
 
@@ -64,10 +64,10 @@ public class CertificateSelectQueryCreator extends SelectQueryCreator {
     }
 
     public void attachSearchQueryPart() {
-        if (defineWhereOrAnd().equals("WHERE")) {
-            this.where(CERTIFICATE_NAME_QUERY);
-        } else {
+        if (hasWhereStatement) {
             this.and(CERTIFICATE_NAME_QUERY);
+        } else {
+            this.where(CERTIFICATE_NAME_QUERY);
         }
         this.or(CERTIFICATE_DESCRIPTION_QUERY);
     }

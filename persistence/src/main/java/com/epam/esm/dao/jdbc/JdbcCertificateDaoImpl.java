@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -48,6 +47,10 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     private static final String DETACH_TAG_SQL =
             "DELETE FROM gift_certificate_tag WHERE certificate_id = ? AND tag_id = ?;";
 
+    private static final String SELECT_ONE_BY_NAME_SQL =
+            "SELECT c.id, c.name, c.description, c.price, c.duration,"
+                    + "c.create_date, c.last_update_date FROM gift_certificate c WHERE c.name = ?";
+
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Certificate> certificateRowMapper;
 
@@ -69,7 +72,7 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
             ps.setShort(4, certificate.getDuration());
             return ps;
         }, keyHolder) == 1;
-        certificate.setId((Long) keyHolder.getKeys().get("id"));
+        certificate.setId(keyHolder.getKey().longValue());
         return isCreated;
     }
 
@@ -121,5 +124,12 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     public List<Certificate> query(CertificateSelectQueryConfig config) {
         PreparedStatementCreator creator = new CertificateSelectQueryCreator(config);
         return jdbcTemplate.query(creator, certificateRowMapper);
+    }
+
+    @Override
+    public Optional<Certificate> readByName(String name) {
+        List<Certificate> certificates =
+                jdbcTemplate.query(SELECT_ONE_BY_NAME_SQL, certificateRowMapper, name);
+        return Optional.ofNullable(DataAccessUtils.uniqueResult(certificates));
     }
 }

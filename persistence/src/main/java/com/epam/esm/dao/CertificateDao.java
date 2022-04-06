@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Qualifier("certificateDao")
@@ -19,4 +20,6 @@ public interface CertificateDao extends BaseDao<Certificate, Long> {
     boolean detachTagFromCertificate(long certificateId, long tagId);
 
     List<Certificate> query(CertificateSelectQueryConfig config);
+
+    Optional<Certificate> readByName(String name);
 }

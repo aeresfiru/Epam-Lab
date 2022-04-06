@@ -8,6 +8,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class CertificateUpdateQueryConfig extends UpdateQueryConfig{
-
     private final Long certificateId;
 }
