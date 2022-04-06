@@ -6,9 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -16,7 +13,5 @@ import javax.validation.constraints.Size;
 @ToString(callSuper = true)
 public class Tag extends AbstractEntity {
 
-    @NotEmpty(message = "Name may not be empty")
-    @Size(min = 3, max = 100, message = "Name should be between 3 and 100 characters long")
     private String name;
 }
