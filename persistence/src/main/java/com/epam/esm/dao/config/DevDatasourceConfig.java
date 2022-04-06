@@ -10,9 +10,9 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:application-prod.properties")
-@Profile("prod")
-public class ProdDatasourceConfig extends DatasourceConfig {
+@PropertySource("classpath:application-dev.properties")
+@Profile("dev")
+public class DevDatasourceConfig extends DatasourceConfig {
 
     @Value("${db.url}")
     private String url;

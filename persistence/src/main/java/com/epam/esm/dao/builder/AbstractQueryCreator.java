@@ -13,7 +13,7 @@ public abstract class AbstractQueryCreator {
     protected StringBuilder builder;
     protected boolean hasWhereStatement = false;
 
-    public AbstractQueryCreator() {
+    protected AbstractQueryCreator() {
         this.builder = new StringBuilder();
     }
 

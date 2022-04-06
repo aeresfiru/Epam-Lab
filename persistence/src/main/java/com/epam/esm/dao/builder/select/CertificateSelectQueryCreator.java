@@ -8,7 +8,7 @@ public class CertificateSelectQueryCreator extends SelectQueryCreator {
 
     private static final String SELECT_QUERY =
             "SELECT c.id, c.name, c.description, c.price, c.duration," +
-            "c.create_date, c.last_update_date FROM gift_certificate c";
+                    "c.create_date, c.last_update_date FROM gift_certificate c";
 
     private static final String TAG_CERTIFICATE_JOIN_QUERY =
             "gift_certificate_tag gct on c.id = gct.certificate_id";
@@ -46,7 +46,8 @@ public class CertificateSelectQueryCreator extends SelectQueryCreator {
         if (config.getSearchQuery() != null) {
             this.attachSearchQueryPart();
         }
-        if (config.getParameterSortingTypeMap() != null) {
+        if (config.getParameterSortingTypeMap() != null
+                && !config.getParameterSortingTypeMap().isEmpty()) {
             this.attachSortingType();
         }
         return builder.toString();

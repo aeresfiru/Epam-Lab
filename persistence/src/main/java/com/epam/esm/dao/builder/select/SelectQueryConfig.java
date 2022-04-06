@@ -9,6 +9,6 @@ import java.util.Map;
 @Data
 @SuperBuilder
 public abstract class SelectQueryConfig {
-    protected final Map<String, SortingType> parameterSortingTypeMap;
-    protected final String searchQuery;
+    protected Map<String, SortingType> parameterSortingTypeMap;
+    protected String searchQuery;
 }

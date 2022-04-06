@@ -1,9 +1,3 @@
-#DROP SCHEMA `gifts-dev`;
-#CREATE SCHEMA `gifts-dev`;
-#use `gifts-dev`;
-#DROP SCHEMA `gifts`;
-#CREATE SCHEMA `gifts`;
-#use `gifts`;
 CREATE TABLE `gift_certificate`
 (
     `id`               bigint         NOT NULL AUTO_INCREMENT,

@@ -2,18 +2,19 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.builder.SortingType;
 import com.epam.esm.dao.builder.select.CertificateSelectQueryConfig;
+import com.epam.esm.dao.builder.select.CertificateSortColumn;
 import com.epam.esm.dao.builder.update.CertificateUpdateQueryConfig;
 import com.epam.esm.domain.Certificate;
 import com.epam.esm.domain.Tag;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.dto.DtoMapper;
+import com.epam.esm.service.dto.impl.CertificateDto;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.EntityNotFoundException;
 import com.epam.esm.service.exception.ErrorCode;
-import com.epam.esm.service.dto.DtoMapper;
-import com.epam.esm.service.dto.impl.CertificateDto;
 import com.epam.esm.service.validator.CertificateValidator;
-import com.epam.esm.service.exception.ErrorConstraint;
 import com.epam.esm.service.validator.Validator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,20 +131,38 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional
     public void deleteCertificate(Long id) {
-        if ( !certificateDao.delete(id)) {
+        if (!certificateDao.delete(id)) {
             throw new EntityNotFoundException(id, ErrorCode.CERTIFICATE_ERROR);
         }
     }
 
     @Override
     public List<CertificateDto> readCertificateByFilterQuery(Optional<String> searchQuery,
-                                                             Optional<String> tagName) {
+                                                             Optional<String> tagName,
+                                                             Optional<List<String>> sorts) {
         CertificateSelectQueryConfig config = CertificateSelectQueryConfig.builder()
                 .searchQuery(searchQuery.orElse(null))
                 .tagParam(tagName.orElse(null))
                 .build();
+        this.addSortsToConfig(config, sorts);
         List<Certificate> certificates = certificateDao.query(config);
         certificates.forEach(c -> c.setTags(tagDao.readByCertificateId(c.getId())));
         return certificates.stream().map(dtoMapper::mapToDto).collect(Collectors.toList());
+    }
+
+    private void addSortsToConfig(CertificateSelectQueryConfig config,
+                                  Optional<List<String>> sorts) {
+        if (sorts.isPresent()) {
+            Map<String, SortingType> sorting = new HashMap<>();
+            sorts.get().forEach(s -> {
+                String[] elements = s.split(":");
+                Optional<String> column = CertificateSortColumn.resolveDbName(elements[0]);
+                if (column.isPresent()) {
+                    SortingType direction = SortingType.valueOf(elements[1].toUpperCase());
+                    sorting.put(column.get(), direction);
+                }
+            });
+            config.setParameterSortingTypeMap(sorting);
+        }
     }
 }

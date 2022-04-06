@@ -1,6 +1,9 @@
 package com.epam.esm.controller.handler;
 
-import com.epam.esm.service.exception.*;
+import com.epam.esm.service.exception.DuplicateEntityException;
+import com.epam.esm.service.exception.EntityNotFoundException;
+import com.epam.esm.service.exception.ErrorConstraint;
+import com.epam.esm.service.exception.IncorrectParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;

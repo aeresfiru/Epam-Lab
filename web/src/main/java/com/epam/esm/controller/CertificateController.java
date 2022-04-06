@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.domain.Certificate;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.dto.impl.CertificateDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +28,10 @@ public class CertificateController {
 
     @GetMapping("/query")
     @ResponseStatus(HttpStatus.OK)
-    public List<CertificateDto> readAllBySearchQuery(@RequestParam Optional<String> searchQuery,
-                                                  @RequestParam Optional<String> tagName) {
-        return service.readCertificateByFilterQuery(searchQuery, tagName);
+    public List<CertificateDto> readAllBySearchQuery(@RequestParam("search") Optional<String> searchQuery,
+                                                     @RequestParam("tag") Optional<String> tagName,
+                                                     @RequestParam("sort") Optional<List<String>> sorts) {
+        return service.readCertificateByFilterQuery(searchQuery, tagName, sorts);
     }
 
     @GetMapping("/{id}")
