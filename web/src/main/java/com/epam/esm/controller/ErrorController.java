@@ -1,4 +1,4 @@
-package com.epam.esm.controller.handler;
+package com.epam.esm.controller;
 
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.EntityNotFoundException;
@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.Locale;
 
 @RestControllerAdvice
-public class ErrorHandler extends ResponseEntityExceptionHandler {
+public class ErrorController extends ResponseEntityExceptionHandler {
 
     private static final String NOT_FOUND_ERROR_CODE = "404";
     private static final String CONFLICT_ERROR_CODE = "409";
@@ -23,7 +23,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     private final MessageSource messageSource;
 
     @Autowired
-    ErrorHandler(MessageSource messageSource) {
+    ErrorController(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 

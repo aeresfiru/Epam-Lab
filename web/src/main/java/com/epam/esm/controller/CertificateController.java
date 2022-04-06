@@ -30,8 +30,8 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.OK)
     public List<CertificateDto> readAllBySearchQuery(@RequestParam("search") Optional<String> searchQuery,
                                                      @RequestParam("tag") Optional<String> tagName,
-                                                     @RequestParam("sort") Optional<List<String>> sorts) {
-        return service.readCertificateByFilterQuery(searchQuery, tagName, sorts);
+                                                     @RequestParam("sort") Optional<String> sortingParameters) {
+        return service.readCertificateByFilterQuery(searchQuery, tagName, sortingParameters);
     }
 
     @GetMapping("/{id}")

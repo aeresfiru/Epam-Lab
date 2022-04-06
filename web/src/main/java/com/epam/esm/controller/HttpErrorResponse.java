@@ -1,4 +1,4 @@
-package com.epam.esm.controller.handler;
+package com.epam.esm.controller;
 
 import lombok.Data;
 

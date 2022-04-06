@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class CertificateDto {
 
-    Long id;
+    private Long id;
 
     private String name;
 

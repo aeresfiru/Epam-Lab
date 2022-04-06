@@ -31,8 +31,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag readById(Long id) {
-        return tagDao.readById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id, ErrorCode.TAG_ERROR));
+        return tagDao.readById(id).orElseThrow(() -> new EntityNotFoundException(id, ErrorCode.TAG_ERROR));
     }
 
     @Override

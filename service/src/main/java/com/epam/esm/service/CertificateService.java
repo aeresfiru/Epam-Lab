@@ -19,5 +19,5 @@ public interface CertificateService {
 
     List<CertificateDto> readCertificateByFilterQuery(Optional<String> searchQuery,
                                                    Optional<String> tagName,
-                                                      Optional<List<String>> sortTypes);
+                                                      Optional<String> sortTypes);
 }
