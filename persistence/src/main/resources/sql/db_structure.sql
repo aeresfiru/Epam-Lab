@@ -1,6 +1,6 @@
-#DROP SCHEMA `gifts-dev`;
-#CREATE SCHEMA `gifts-dev`;
-#use `gifts-dev`;
+DROP SCHEMA `gifts-dev`;
+CREATE SCHEMA `gifts-dev`;
+use `gifts-dev`;
 #DROP SCHEMA `gifts`;
 #CREATE SCHEMA `gifts`;
 #use `gifts`;

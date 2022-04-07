@@ -1,4 +1,4 @@
-package com.epam.esm.dao.builder.select;
+package com.epam.esm.dao.query.impl;
 
 import java.util.Arrays;
 import java.util.Optional;

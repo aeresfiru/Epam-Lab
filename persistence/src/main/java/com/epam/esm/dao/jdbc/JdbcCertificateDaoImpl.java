@@ -1,10 +1,10 @@
 package com.epam.esm.dao.jdbc;
 
 import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.dao.builder.select.CertificateSelectQueryConfig;
-import com.epam.esm.dao.builder.select.CertificateSelectQueryCreator;
-import com.epam.esm.dao.builder.update.CertificateUpdateQueryConfig;
-import com.epam.esm.dao.builder.update.CertificateUpdateQueryCreator;
+import com.epam.esm.dao.query.config.CertificateSelectQueryConfig;
+import com.epam.esm.dao.query.config.CertificateUpdateQueryConfig;
+import com.epam.esm.dao.query.impl.CertificateSelectQueryCreator;
+import com.epam.esm.dao.query.impl.CertificateUpdateQueryCreator;
 import com.epam.esm.domain.Certificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
@@ -33,10 +33,6 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     private static final String SELECT_ONE_SQL =
             "SELECT c.id, c.name, c.description, c.price, c.duration,"
                     + "c.create_date, c.last_update_date FROM gift_certificate c WHERE c.id = ?";
-
-    private static final String UPDATE_ONE_SQL =
-            "UPDATE gift_certificate c SET c.id = ?, c.name = ?, c.price = ?,"
-                    + "c.duration = ?, c.last_update_date = ? WHERE c.id = ?";
 
     private static final String DELETE_ONE_SQL =
             "DELETE FROM gift_certificate WHERE gift_certificate.id = ?";
@@ -89,14 +85,9 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     }
 
     @Override
+    @Deprecated
     public boolean update(Certificate certificate) {
-        return jdbcTemplate.update(UPDATE_ONE_SQL,
-                certificate.getName(),
-                certificate.getDescription(),
-                certificate.getPrice(),
-                certificate.getDuration(),
-                certificate.getCreateDate(),
-                certificate.getId()) == 1;
+        throw new UnsupportedOperationException("Deprecated method, use update(config) instead.");
     }
 
     @Override

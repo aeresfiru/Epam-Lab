@@ -1,10 +1,10 @@
 package com.epam.esm.jdbc;
 
 import com.epam.esm.config.TestConfig;
-import com.epam.esm.dao.builder.SortingType;
-import com.epam.esm.dao.builder.select.CertificateSelectQueryConfig;
-import com.epam.esm.dao.builder.update.CertificateUpdateQueryConfig;
 import com.epam.esm.dao.jdbc.JdbcCertificateDaoImpl;
+import com.epam.esm.dao.query.SortingType;
+import com.epam.esm.dao.query.config.CertificateSelectQueryConfig;
+import com.epam.esm.dao.query.config.CertificateUpdateQueryConfig;
 import com.epam.esm.domain.Certificate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

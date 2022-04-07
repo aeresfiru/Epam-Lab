@@ -1,4 +1,4 @@
-package com.epam.esm.dao.builder.update;
+package com.epam.esm.dao.query.config;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

@@ -1,6 +1,6 @@
-package com.epam.esm.dao.builder.select;
+package com.epam.esm.dao.query.config;
 
-import com.epam.esm.dao.builder.SortingType;
+import com.epam.esm.dao.query.SortingType;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 

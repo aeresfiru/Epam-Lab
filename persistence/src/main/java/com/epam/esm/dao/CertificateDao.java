@@ -1,7 +1,7 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dao.builder.select.CertificateSelectQueryConfig;
-import com.epam.esm.dao.builder.update.CertificateUpdateQueryConfig;
+import com.epam.esm.dao.query.config.CertificateSelectQueryConfig;
+import com.epam.esm.dao.query.config.CertificateUpdateQueryConfig;
 import com.epam.esm.domain.Certificate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
