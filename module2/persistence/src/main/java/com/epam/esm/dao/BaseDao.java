@@ -1,13 +1,12 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.domain.AbstractEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BaseDao<T extends AbstractEntity, K> {
+public interface BaseDao<T, K> {
 
     boolean create(T t);
 

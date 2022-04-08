@@ -17,6 +17,8 @@ public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateD
         dto.setDescription(entity.getDescription());
         dto.setDuration(entity.getDuration());
         dto.setPrice(entity.getPrice());
+        dto.setLastUpdateDate(entity.getLastUpdateDate());
+        dto.setCreateDate(entity.getCreateDate());
         dto.setTags(entity.getTags());
         return dto;
     }
@@ -30,6 +32,8 @@ public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateD
                 .description(dto.getDescription())
                 .duration(dto.getDuration())
                 .price(dto.getPrice())
+                .lastUpdateDate(dto.getLastUpdateDate())
+                .createDate(dto.getCreateDate())
                 .tags(dto.getTags())
                 .build();
     }

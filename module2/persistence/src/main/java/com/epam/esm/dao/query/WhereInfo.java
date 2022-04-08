@@ -21,6 +21,7 @@ public final class WhereInfo {
     private final boolean startBracket;
     private final boolean endBracket;
     private final boolean orClause;
+
     public enum WhereOperator {
         EQUALS("="),
         NOT_EQUALS("<>"),

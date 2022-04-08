@@ -17,6 +17,7 @@ public final class JoinInfo {
     private String rightField;
     private String table;
     private JoinType joinType;
+
     public enum JoinType {
         LEFT, RIGHT, INNER, OUTER
     }

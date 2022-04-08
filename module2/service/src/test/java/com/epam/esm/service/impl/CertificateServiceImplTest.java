@@ -82,14 +82,18 @@ class CertificateServiceImplTest {
                 firstCertificate.getDescription(),
                 firstCertificate.getPrice(),
                 firstCertificate.getDuration(),
-                firstCertificate.getTags());
+                firstCertificate.getTags(),
+                firstCertificate.getCreateDate(),
+                firstCertificate.getLastUpdateDate());
         secondCertificateDto = new CertificateDto(
                 secondCertificate.getId(),
                 secondCertificate.getName(),
                 secondCertificate.getDescription(),
                 secondCertificate.getPrice(),
                 secondCertificate.getDuration(),
-                secondCertificate.getTags());
+                secondCertificate.getTags(),
+                firstCertificate.getCreateDate(),
+                firstCertificate.getLastUpdateDate());
     }
 
     @Test
