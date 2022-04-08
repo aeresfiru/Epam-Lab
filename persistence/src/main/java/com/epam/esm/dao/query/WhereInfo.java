@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class WhereInfo {
+public final class WhereInfo {
     public enum WhereOperator {
         EQUALS("="),
         NOT_EQUALS("<>"),

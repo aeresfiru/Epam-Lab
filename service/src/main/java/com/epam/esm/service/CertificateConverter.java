@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.domain.AbstractEntity;
 import com.epam.esm.service.dto.impl.CertificateDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

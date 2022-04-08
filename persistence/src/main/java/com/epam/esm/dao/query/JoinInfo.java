@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class JoinInfo {
+public final class JoinInfo {
     public enum JoinType {
         LEFT, RIGHT, INNER, OUTER
     }

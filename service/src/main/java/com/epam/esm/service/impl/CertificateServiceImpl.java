@@ -2,10 +2,10 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.builder.SortingType;
-import com.epam.esm.dao.builder.select.CertificateSelectQueryConfig;
-import com.epam.esm.dao.builder.select.CertificateSortColumn;
-import com.epam.esm.dao.builder.update.CertificateUpdateQueryConfig;
+import com.epam.esm.dao.query.SortingType;
+import com.epam.esm.dao.query.config.CertificateSelectQueryConfig;
+import com.epam.esm.dao.query.config.CertificateUpdateQueryConfig;
+import com.epam.esm.dao.query.impl.CertificateSortColumn;
 import com.epam.esm.domain.Certificate;
 import com.epam.esm.domain.Tag;
 import com.epam.esm.service.CertificateConverter;
@@ -16,17 +16,12 @@ import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.EntityNotFoundException;
 import com.epam.esm.service.exception.ErrorCode;
 import com.epam.esm.service.validator.CertificateValidator;
-import com.epam.esm.service.validator.Validator;
+import com.epam.esm.service.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,20 +30,14 @@ public class CertificateServiceImpl implements CertificateService {
     private final CertificateDao certificateDao;
     private final DtoMapper<Certificate, CertificateDto> dtoMapper;
     private final TagDao tagDao;
-    private final CertificateValidator certificateValidator;
-    private final Validator<Tag> tagValidator;
 
     @Autowired
     public CertificateServiceImpl(CertificateDao certificateDao,
                                   DtoMapper<Certificate, CertificateDto> dtoMapper,
-                                  TagDao tagDao,
-                                  CertificateValidator certificateValidator,
-                                  Validator<Tag> tagValidator) {
+                                  TagDao tagDao) {
         this.certificateDao = certificateDao;
         this.dtoMapper = dtoMapper;
         this.tagDao = tagDao;
-        this.certificateValidator = certificateValidator;
-        this.tagValidator = tagValidator;
     }
 
     @Override
@@ -58,9 +47,9 @@ public class CertificateServiceImpl implements CertificateService {
             throw new DuplicateEntityException(dto.getName(), ErrorCode.CERTIFICATE_ERROR);
         }
         Certificate entity = dtoMapper.mapFromDto(dto);
-        certificateValidator.validate(entity);
+        CertificateValidator.validate(entity);
         if (entity.getTags() != null) {
-            entity.getTags().forEach(tagValidator::validate);
+            entity.getTags().forEach(TagValidator::validate);
             entity.setTags(dto.getTags());
         }
         certificateDao.create(entity);
@@ -78,7 +67,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public CertificateDto readById(Long id) {
         CertificateDto certificate = dtoMapper.mapToDto(certificateDao.readById(id)
-                        .orElseThrow(() -> new EntityNotFoundException(id, ErrorCode.CERTIFICATE_ERROR)));
+                .orElseThrow(() -> new EntityNotFoundException(id, ErrorCode.CERTIFICATE_ERROR)));
         certificate.setTags(tagDao.readByCertificateId(id));
         return certificate;
     }
@@ -86,11 +75,15 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional
     public CertificateDto updateCertificate(CertificateDto dto, Long id) {
+        Optional<Certificate> nameDuplicate = certificateDao.readByName(dto.getName());
+        if (nameDuplicate.isPresent() && !nameDuplicate.get().getId().equals(id)) {
+            throw new DuplicateEntityException(dto.getName(), ErrorCode.CERTIFICATE_ERROR);
+        }
+
         CertificateUpdateQueryConfig config = this.createCertificateConfigForUpdate(dto, id);
         Certificate entity = dtoMapper.mapFromDto(dto);
-        entity.setId(id);
-        certificateValidator.validateForUpdate(entity);
-        entity.getTags().forEach(tagValidator::validate);
+        CertificateValidator.validateForUpdate(entity);
+        entity.getTags().forEach(TagValidator::validate);
         certificateDao.update(config);
         this.unlinkTags(this.readById(id));
         this.linkTags(dto, id);
@@ -109,14 +102,8 @@ public class CertificateServiceImpl implements CertificateService {
     public List<CertificateDto> readCertificateByFilterQuery(Optional<String> searchQuery,
                                                              Optional<String> tagName,
                                                              Optional<String> sortParameters) {
-        CertificateSelectQueryConfig config = CertificateSelectQueryConfig.builder()
-                .searchQuery(searchQuery.orElse(null))
-                .tagParam(tagName.orElse(null))
-                .build();
-        Map<String, SortingType> sortingMap = this.convertSortParametersIntoMap(sortParameters);
-        if (!sortingMap.isEmpty()) {
-            config.setParameterSortingTypeMap(sortingMap);
-        }
+        CertificateSelectQueryConfig config =
+                this.createCertificateConfigForSelect(searchQuery, tagName, sortParameters);
         List<Certificate> certificates = certificateDao.query(config);
         certificates.forEach(c -> c.setTags(tagDao.readByCertificateId(c.getId())));
         return certificates.stream().map(dtoMapper::mapToDto).collect(Collectors.toList());
@@ -144,6 +131,20 @@ public class CertificateServiceImpl implements CertificateService {
         dto.getTags()
                 .stream().filter(t -> t.getId() != null)
                 .forEach(t -> certificateDao.detachTagFromCertificate(dto.getId(), t.getId()));
+    }
+
+    private CertificateSelectQueryConfig createCertificateConfigForSelect(Optional<String> searchQuery,
+                                                                          Optional<String> tagName,
+                                                                          Optional<String> sortParameters) {
+        CertificateSelectQueryConfig config = CertificateSelectQueryConfig.builder()
+                .searchQuery(searchQuery.orElse(null))
+                .tagParam(tagName.orElse(null))
+                .build();
+        if (sortParameters.isPresent()) {
+            Map<String, SortingType> sortingMap = this.convertSortParametersIntoMap(sortParameters);
+            config.setParameterSortingTypeMap(sortingMap);
+        }
+        return config;
     }
 
     private CertificateUpdateQueryConfig createCertificateConfigForUpdate(CertificateDto certificate, Long id) {

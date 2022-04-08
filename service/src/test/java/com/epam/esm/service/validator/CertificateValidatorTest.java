@@ -2,6 +2,8 @@ package com.epam.esm.service.validator;
 
 import com.epam.esm.domain.Certificate;
 import com.epam.esm.domain.Tag;
+import com.epam.esm.service.exception.IncorrectParameterException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,71 +31,79 @@ class CertificateValidatorTest {
     }
 
     @Test
-    void When_CertificateFieldsAllGood_Expect_NotGiveConstraintViolations() {
+    void When_CertificateValid_Expect_NotThrowsIncorrectParameterException() {
+        Assertions.assertDoesNotThrow(() -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_NameLessThanThreeCharactersLong_Expect_GiveConstraintViolations() {
+    void When_NameLessThanThreeCharactersLong_Expect_ThrowsIncorrectParameterException() {
+        certificate.setName("tw");
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_NameMoreThan100CharsLong_Expect_GiveConstraintViolations() {
-        String space101 = new String(new char[101]).replace('\0', ' ');
-        certificate.setName(space101);
+    void When_NameMoreThan100CharsLong_Expect_ThrowsIncorrectParameterException() {
+        String spaces = new String(new char[101]).replace('\0', ' ');
+        certificate.setName(spaces);
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_EmptyName_Expect_GiveConstraintViolations() {
+    void When_EmptyName_Expect_ThrowsIncorrectParameterException() {
         certificate.setName("");
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_DescLessThanTwentyCharsLong_Expect_GiveConstraintViolations() {
+    void When_DescLessThanTwentyCharsLong_Expect_ThrowsIncorrectParameterException() {
         certificate.setDescription("Bad description");
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_DescMoreThan500CharsLong_Expect_GiveConstraintViolations() {
-        String space501 = new String(new char[501]).replace('\0', ' ');
+    void When_DescMoreThan500CharsLong_Expect_ThrowsIncorrectParameterException() {
+        String spaces = new String(new char[501]).replace('\0', ' ');
+        certificate.setDescription(spaces);
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_EmptyDesc_Expect_GiveConstraintViolations() {
+    void When_EmptyDesc_Expect_ThrowsIncorrectParameterException() {
         certificate.setDescription("");
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_PriceMoreThanThreeIntegerDigits_Expect_GiveConstraintViolations() {
+    void When_PriceMoreThanThreeIntegerDigits_Expect_ThrowsIncorrectParameterException() {
         certificate.setPrice(new BigDecimal("1111.00"));
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_PriceMoreThanTwoFractionalDigits_Expect_GiveConstraintViolations() {
+    void When_PriceMoreThanTwoFractionalDigits_Expect_ThrowsIncorrectParameterException() {
         certificate.setPrice(new BigDecimal("11.001"));
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_DurationMoreThanYear_Expect_GiveConstraintViolations() {
+    void When_DurationMoreThanYear_Expect_ThrowsIncorrectParameterException() {
         certificate.setDuration((short) 366);
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 
     @Test
-    void When_DurationLesserThanThreeDays_Expect_GiveConstraintViolations() {
+    void When_DurationLesserThanThreeDays_Expect_ThrowsIncorrectParameterException() {
         certificate.setDuration((short) 2);
-    }
-
-    @Test
-    void When_CreateDateIsNull_Expect_GiveConstraintViolations() {
-        certificate.setCreateDate(null);
-    }
-
-    @Test
-    void When_LastUpdateDateIsNull_Expect_GiveConstraintViolations() {
-        certificate.setCreateDate(null);
-    }
-
-    @Test
-    void When_TagsIsEmpty_Expect_GiveConstraintViolations() {
-        certificate.setTags(new HashSet<>());
+        Assertions.assertThrows(IncorrectParameterException.class,
+                () -> CertificateValidator.validate(certificate));
     }
 }

@@ -67,6 +67,12 @@ subprojects {
 
         // https://mvnrepository.com/artifact/org.mockito/mockito-core
         testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+
+        // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+        testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: mockitoVersion
+
+        // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
     }
 
     test {

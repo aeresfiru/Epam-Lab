@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @since 8.04.22
  */
 @Component
-public class SelectQueryCreator extends QueryCreator {
+public final class SelectQueryCreator extends QueryCreator {
 
     @Override
     public String createSqlQuery() {

@@ -4,14 +4,12 @@ import com.epam.esm.domain.Certificate;
 import com.epam.esm.service.exception.ErrorCode;
 import com.epam.esm.service.exception.ErrorConstraint;
 import com.epam.esm.service.exception.IncorrectParameterException;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Component
-@Qualifier("certificateValidator")
-public class CertificateValidator extends Validator<Certificate> {
+public class CertificateValidator {
     private static final int MAX_LENGTH_NAME = 100;
     private static final int MIN_LENGTH_NAME = 3;
     private static final int MIN_LENGTH_DESCRIPTION = 20;
@@ -20,17 +18,19 @@ public class CertificateValidator extends Validator<Certificate> {
     private static final BigDecimal MIN_PRICE = new BigDecimal("0.01");
     private static final BigDecimal MAX_PRICE = new BigDecimal("999.99");
     private static final int MAX_DURATION = 365;
-    private static final int MIN_DURATION = 1;
+    private static final int MIN_DURATION = 3;
 
-    @Override
-    public void validate(Certificate certificate) throws IncorrectParameterException {
+    private CertificateValidator() {
+    }
+
+    public static void validate(Certificate certificate) throws IncorrectParameterException {
         validateName(certificate.getName());
         validateDescription(certificate.getDescription());
         validatePrice(certificate.getPrice());
         validateDuration(certificate.getDuration());
     }
 
-    public void validateForUpdate(Certificate certificate) {
+    public static void validateForUpdate(Certificate certificate) {
         if (certificate.getName() != null) {
             validateName(certificate.getName());
         }
@@ -45,7 +45,7 @@ public class CertificateValidator extends Validator<Certificate> {
         }
     }
 
-    private void validateName(String name) throws IncorrectParameterException {
+    private static void validateName(String name) throws IncorrectParameterException {
         if (name == null
                 || name.length() < MIN_LENGTH_NAME
                 || name.length() > MAX_LENGTH_NAME) {
@@ -55,7 +55,7 @@ public class CertificateValidator extends Validator<Certificate> {
         }
     }
 
-    private void validateDescription(String description) throws IncorrectParameterException {
+    private static void validateDescription(String description) throws IncorrectParameterException {
         if (description == null
                 || description.length() > MAX_LENGTH_DESCRIPTION
                 || description.length() < MIN_LENGTH_DESCRIPTION) {
@@ -65,7 +65,7 @@ public class CertificateValidator extends Validator<Certificate> {
         }
     }
 
-    private void validatePrice(BigDecimal price) throws IncorrectParameterException {
+    private static void validatePrice(BigDecimal price) throws IncorrectParameterException {
         if (price == null
                 || price.scale() > MAX_SCALE
                 || price.compareTo(MIN_PRICE) < 0
@@ -76,7 +76,7 @@ public class CertificateValidator extends Validator<Certificate> {
         }
     }
 
-    private void validateDuration(Short duration) throws IncorrectParameterException {
+    private static void validateDuration(Short duration) throws IncorrectParameterException {
         if (duration == null
                 || duration < MIN_DURATION
                 || duration > MAX_DURATION) {

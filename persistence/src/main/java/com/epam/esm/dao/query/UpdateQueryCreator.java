@@ -9,7 +9,7 @@ import java.util.Map;
  * @version 1.0
  * @since 8.04.22
  */
-public class UpdateQueryCreator extends QueryCreator {
+public final class UpdateQueryCreator extends QueryCreator {
 
     @Override
     public String createSqlQuery() {
