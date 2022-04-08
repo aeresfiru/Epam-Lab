@@ -22,6 +22,10 @@ class TagServiceImplTest {
 
     private Tag firstTag;
     private List<Tag> tags;
+    @Mock
+    private TagDao mockTagRepository;
+    @InjectMocks
+    private TagServiceImpl service;
 
     @BeforeEach
     void setUp() {
@@ -29,12 +33,6 @@ class TagServiceImplTest {
         Tag secondTag = Tag.builder().id(2L).name("Tag 2").build();
         tags = Arrays.asList(firstTag, secondTag);
     }
-
-    @Mock
-    private TagDao mockTagRepository;
-
-    @InjectMocks
-    private TagServiceImpl service;
 
     @Test
     void When_TagsPresent_Expect_ReturnListOfTags() {

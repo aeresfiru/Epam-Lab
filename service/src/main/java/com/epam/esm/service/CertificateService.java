@@ -18,6 +18,6 @@ public interface CertificateService {
     void deleteCertificate(Long id);
 
     List<CertificateDto> readCertificateByFilterQuery(Optional<String> searchQuery,
-                                                   Optional<String> tagName,
+                                                      Optional<String> tagName,
                                                       Optional<String> sortTypes);
 }

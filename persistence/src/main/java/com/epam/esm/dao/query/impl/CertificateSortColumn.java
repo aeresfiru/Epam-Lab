@@ -15,14 +15,6 @@ public enum CertificateSortColumn {
         this.nameInDb = nameInDb;
     }
 
-    public String getNameInRequest() {
-        return nameInRequest;
-    }
-
-    public String getNameInDb() {
-        return nameInDb;
-    }
-
     public static Optional<String> resolveDbName(String nameInRequest) {
         Optional<String> nameInDb = Optional.empty();
         Optional<CertificateSortColumn> column = Arrays.stream(values())
@@ -31,6 +23,14 @@ public enum CertificateSortColumn {
         if (column.isPresent()) {
             nameInDb = Optional.ofNullable(column.get().getNameInDb());
         }
+        return nameInDb;
+    }
+
+    public String getNameInRequest() {
+        return nameInRequest;
+    }
+
+    public String getNameInDb() {
         return nameInDb;
     }
 }

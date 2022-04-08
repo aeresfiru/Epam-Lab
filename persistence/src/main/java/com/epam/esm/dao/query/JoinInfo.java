@@ -13,12 +13,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public final class JoinInfo {
-    public enum JoinType {
-        LEFT, RIGHT, INNER, OUTER
-    }
-
     private String leftField;
     private String rightField;
     private String table;
     private JoinType joinType;
+    public enum JoinType {
+        LEFT, RIGHT, INNER, OUTER
+    }
 }

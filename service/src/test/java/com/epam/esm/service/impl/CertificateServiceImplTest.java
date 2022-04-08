@@ -26,18 +26,25 @@ import java.util.*;
 @ExtendWith(MockitoExtension.class)
 class CertificateServiceImplTest {
 
+    private final List<Tag> tags = new ArrayList<Tag>() {{
+        add(Tag.builder().id(1L).name("Tag 1").build());
+        add(Tag.builder().id(2L).name("Tag 2").build());
+        add(Tag.builder().id(3L).name("Tag 3").build());
+    }};
     private Certificate firstCertificate;
     private Certificate secondCertificate;
     private CertificateDto firstCertificateDto;
     private CertificateDto secondCertificateDto;
     private Set<Tag> firstCertificateTags;
     private Set<Tag> secondCertificateTags;
-
-    private final List<Tag> tags = new ArrayList<Tag>() {{
-        add(Tag.builder().id(1L).name("Tag 1").build());
-        add(Tag.builder().id(2L).name("Tag 2").build());
-        add(Tag.builder().id(3L).name("Tag 3").build());
-    }};
+    @Mock
+    private CertificateDao mockCertificateDao;
+    @Mock
+    private TagDao mockTagDao;
+    @Mock
+    private DtoMapper<Certificate, CertificateDto> dtoMapper;
+    @InjectMocks
+    private CertificateServiceImpl service;
 
     @BeforeEach
     void setUp() {
@@ -84,18 +91,6 @@ class CertificateServiceImplTest {
                 secondCertificate.getDuration(),
                 secondCertificate.getTags());
     }
-
-    @Mock
-    private CertificateDao mockCertificateDao;
-
-    @Mock
-    private TagDao mockTagDao;
-
-    @Mock
-    private DtoMapper<Certificate, CertificateDto> dtoMapper;
-
-    @InjectMocks
-    private CertificateServiceImpl service;
 
     @Test
     void When_CreateCertificate_Expect_ReturnCertificate() {

@@ -15,6 +15,12 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public final class WhereInfo {
+    private final WhereOperator operator;
+    private final String field;
+    private final String value;
+    private final boolean startBracket;
+    private final boolean endBracket;
+    private final boolean orClause;
     public enum WhereOperator {
         EQUALS("="),
         NOT_EQUALS("<>"),
@@ -37,11 +43,4 @@ public final class WhereInfo {
             return value;
         }
     }
-
-    private final WhereOperator operator;
-    private final String field;
-    private final String value;
-    private final boolean startBracket;
-    private final boolean endBracket;
-    private final boolean orClause;
 }
