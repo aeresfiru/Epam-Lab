@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @since 7.04.22
  */
 @Component
-public final class CertificateConverter {
+public class CertificateConverter {
 
     private final ObjectMapper objectMapper;
 

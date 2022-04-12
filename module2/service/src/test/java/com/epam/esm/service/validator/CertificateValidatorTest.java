@@ -2,6 +2,7 @@ package com.epam.esm.service.validator;
 
 import com.epam.esm.domain.Certificate;
 import com.epam.esm.domain.Tag;
+import com.epam.esm.service.dto.impl.CertificateDto;
 import com.epam.esm.service.exception.IncorrectParameterException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +15,11 @@ import java.util.HashSet;
 
 class CertificateValidatorTest {
 
-    private Certificate certificate;
+    private CertificateDto certificate;
 
     @BeforeEach
     public void setupCertificate() {
-        certificate = Certificate.builder()
+        certificate = CertificateDto.builder()
                 .id(101L)
                 .name("This is a good name")
                 .description("This is a good description")

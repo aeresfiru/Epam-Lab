@@ -6,6 +6,7 @@ import com.epam.esm.dao.query.config.CertificateSelectQueryConfig;
 import com.epam.esm.dao.query.config.CertificateUpdateQueryConfig;
 import com.epam.esm.domain.Certificate;
 import com.epam.esm.domain.Tag;
+import com.epam.esm.service.CertificateConverter;
 import com.epam.esm.service.dto.DtoMapper;
 import com.epam.esm.service.dto.impl.CertificateDto;
 import com.epam.esm.service.exception.DuplicateEntityException;
@@ -43,6 +44,8 @@ class CertificateServiceImplTest {
     private TagDao mockTagDao;
     @Mock
     private DtoMapper<Certificate, CertificateDto> dtoMapper;
+    @Mock
+    private CertificateConverter certificateConverter;
     @InjectMocks
     private CertificateServiceImpl service;
 
@@ -154,7 +157,6 @@ class CertificateServiceImplTest {
         Mockito.when(mockTagDao.readByName(tags.get(0).getName())).thenReturn(Optional.of(tags.get(0)));
         Mockito.when(mockTagDao.readByName(tags.get(1).getName())).thenReturn(Optional.of(tags.get(1)));
 
-        Mockito.when(dtoMapper.mapFromDto(firstCertificateDto)).thenReturn(firstCertificate);
         Mockito.when(dtoMapper.mapToDto(firstCertificate)).thenReturn(firstCertificateDto);
 
         CertificateDto savedCertificate = service.updateCertificate(firstCertificateDto, firstCertificate.getId());
