@@ -53,8 +53,8 @@ public class JdbcTagDaoImpl implements TagDao {
             PreparedStatement ps = con.prepareStatement(CREATE_ONE_SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, tag.getName());
             return ps;
-        }, keyHolder) == 1;
-        tag.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        }, keyHolder) != 0;
+        tag.setId(keyHolder.getKey().longValue());
         return isCreated;
     }
 

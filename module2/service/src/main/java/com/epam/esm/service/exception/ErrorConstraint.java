@@ -9,6 +9,7 @@ public class ErrorConstraint {
     public static final String INVALID_TAG_NAME = "error.tag.name";
     public static final String RESOURCE_NOT_FOUND = "error.not.found";
     public static final String CONFLICT = "error.cant.create";
+    public static final String INTERNAL = "error.server";
 
     private ErrorConstraint() {
     }

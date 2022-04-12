@@ -1,6 +1,7 @@
 package com.epam.esm.service.validator;
 
 import com.epam.esm.domain.Certificate;
+import com.epam.esm.service.dto.impl.CertificateDto;
 import com.epam.esm.service.exception.ErrorCode;
 import com.epam.esm.service.exception.ErrorConstraint;
 import com.epam.esm.service.exception.IncorrectParameterException;
@@ -23,14 +24,14 @@ public class CertificateValidator {
     private CertificateValidator() {
     }
 
-    public static void validate(Certificate certificate) throws IncorrectParameterException {
+    public static void validate(CertificateDto certificate) throws IncorrectParameterException {
         validateName(certificate.getName());
         validateDescription(certificate.getDescription());
         validatePrice(certificate.getPrice());
         validateDuration(certificate.getDuration());
     }
 
-    public static void validateForUpdate(Certificate certificate) {
+    public static void validateForUpdate(CertificateDto certificate) {
         if (certificate.getName() != null) {
             validateName(certificate.getName());
         }

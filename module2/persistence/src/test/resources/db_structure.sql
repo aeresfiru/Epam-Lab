@@ -1,12 +1,12 @@
 CREATE TABLE `gift_certificate`
 (
-    `id`               bigint AUTO_INCREMENT,
-    `name`             varchar(100)                                                    NOT NULL UNIQUE,
-    `description`      varchar(500)                                                    NOT NULL,
-    `price`            decimal(10, 2)                                                  NOT NULL,
-    `duration`         smallint                                                        NOT NULL,
-    `create_date`      timestamp default CURRENT_TIMESTAMP()                           NOT NULL,
-    `last_update_date` timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    `id`               bigint         NOT NULL AUTO_INCREMENT,
+    `name`             varchar(100)   NOT NULL UNIQUE,
+    `description`      varchar(500)   NOT NULL,
+    `price`            decimal(10, 2) NOT NULL,
+    `duration`         smallint       NOT NULL,
+    `create_date`      timestamp      NOT NULL default CURRENT_TIMESTAMP(),
+    `last_update_date` timestamp      NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT `PK_gift_certificate`
         PRIMARY KEY (`id`)
 );
@@ -14,7 +14,7 @@ CREATE TABLE `gift_certificate`
 CREATE TABLE `tag`
 (
     `id`   bigint      NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL UNIQUE,
+    `name` varchar(20) NOT NULL UNIQUE,
     CONSTRAINT `PK_tag`
         PRIMARY KEY (`id`)
 );

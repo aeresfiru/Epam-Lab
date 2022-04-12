@@ -130,6 +130,9 @@ public abstract class QueryCreator {
     }
 
     protected void setWhereStatement(StringBuilder query) {
+        if (wheres.isEmpty()) {
+            return;
+        }
         int fieldCount = 0;
         query.append(" ").append(WHERE).append(" ");
 

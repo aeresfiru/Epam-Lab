@@ -50,6 +50,40 @@ public class CertificateSelectQueryCreator implements PreparedStatementCreator {
                 CERTIFICATE_PRICE, CERTIFICATE_DURATION, CERTIFICATE_CREATE_DATE, CERTIFICATE_LAST_UPDATE_DATE);
         selectQueryCreator.distinct();
 
+        this.appendSearchQuery();
+        this.appendTags();
+
+        if (config.getParameterSortingTypeMap() != null) {
+            selectQueryCreator.orderBy(config.getParameterSortingTypeMap());
+        }
+        return con.prepareStatement(selectQueryCreator.createSqlQuery());
+    }
+
+    private void appendTags() {
+        if (config.getTagParam() != null) {
+            selectQueryCreator.join(CERTIFICATE_TAG_TABLE_NAME, CERTIFICATE_ID, CERTIFICATE_TAG_CERTIFICATE_ID);
+            selectQueryCreator.join(TAG_TABLE_NAME, CERTIFICATE_TAG_TAG_ID, TAG_ID);
+            boolean isOrClause = false;
+            boolean startBracket = true;
+            boolean endBracket = false;
+            int tagIndex = 0;
+            for (String tag : config.getTagParam()) {
+                if (tagIndex > 0) {
+                    startBracket = false;
+                    isOrClause = true;
+                }
+                if (tagIndex == config.getTagParam().size() - 1) {
+                    endBracket = true;
+                }
+                String searchTag = "%" + tag + "%";
+                selectQueryCreator.addWhere(TAG_NAME, searchTag, WhereInfo.WhereOperator.LIKE,
+                        startBracket, endBracket, isOrClause);
+                tagIndex++;
+            }
+        }
+    }
+
+    private void appendSearchQuery() {
         if (config.getSearchQuery() != null) {
             String searchQuery = "%" + config.getSearchQuery() + "%";
             WhereInfo.WhereOperator operator = WhereInfo.WhereOperator.LIKE;
@@ -58,18 +92,5 @@ public class CertificateSelectQueryCreator implements PreparedStatementCreator {
             selectQueryCreator.addWhere(CERTIFICATE_DESCRIPTION, searchQuery, operator,
                     false, true, true);
         }
-
-        if (config.getTagParam() != null) {
-            String searchTag = "%" + config.getTagParam() + "%";
-            selectQueryCreator.join(CERTIFICATE_TAG_TABLE_NAME, CERTIFICATE_ID, CERTIFICATE_TAG_CERTIFICATE_ID);
-            selectQueryCreator.join(TAG_TABLE_NAME, CERTIFICATE_TAG_TAG_ID, TAG_ID);
-            selectQueryCreator.addWhere(TAG_NAME, searchTag, WhereInfo.WhereOperator.LIKE,
-                    false, false, false);
-        }
-
-        if (config.getParameterSortingTypeMap() != null) {
-            selectQueryCreator.orderBy(config.getParameterSortingTypeMap());
-        }
-        return con.prepareStatement(selectQueryCreator.createSqlQuery());
     }
 }

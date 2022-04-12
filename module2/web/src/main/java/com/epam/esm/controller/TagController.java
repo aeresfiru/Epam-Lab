@@ -20,13 +20,11 @@ public class TagController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<Tag> readAll() {
         return tagService.readAll();
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public Tag readById(@PathVariable Long id) {
         return tagService.readById(id);
     }

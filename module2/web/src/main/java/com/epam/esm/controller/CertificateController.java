@@ -20,22 +20,19 @@ public class CertificateController {
         this.service = service;
     }
 
-    @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
     public List<CertificateDto> readAll() {
         return service.readAllCertificates();
     }
 
     @GetMapping("/query")
-    @ResponseStatus(HttpStatus.OK)
     public List<CertificateDto> readAllBySearchQuery(@RequestParam("search") Optional<String> searchQuery,
-                                                     @RequestParam("tag") Optional<String> tagName,
+                                                     @RequestParam("tag") Optional<List<String>> tagNames,
                                                      @RequestParam("sort") Optional<String> sortingParameters) {
-        return service.readCertificateByFilterQuery(searchQuery, tagName, sortingParameters);
+        return service.readCertificateByFilterQuery(searchQuery, tagNames, sortingParameters);
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public CertificateDto readById(@PathVariable Long id) {
         return service.readById(id);
     }

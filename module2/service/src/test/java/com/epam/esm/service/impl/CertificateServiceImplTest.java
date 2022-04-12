@@ -165,7 +165,9 @@ class CertificateServiceImplTest {
     void When_ReadCertificateByFilter_Expect_ReturnListOfCertificates() {
         List<CertificateDto> certificateDtos = Arrays.asList(firstCertificateDto, secondCertificateDto);
         CertificateSelectQueryConfig config = CertificateSelectQueryConfig.builder()
-                .tagParam("Tag")
+                .tagParam(new ArrayList<>() {{
+                    add("Tag");
+                }})
                 .build();
         Mockito.lenient().when(mockCertificateDao.query(config))
                 .thenReturn(Arrays.asList(firstCertificate, secondCertificate));
@@ -177,7 +179,9 @@ class CertificateServiceImplTest {
         Mockito.when(dtoMapper.mapToDto(secondCertificate)).thenReturn(secondCertificateDto);
 
         List<CertificateDto> certificates = service.readCertificateByFilterQuery(Optional.empty(),
-                Optional.of("Tag"), Optional.empty());
+                Optional.of(new ArrayList<>() {{
+                    add("Tag");
+                }}), Optional.empty());
         Assertions.assertEquals(certificateDtos, certificates);
     }
 

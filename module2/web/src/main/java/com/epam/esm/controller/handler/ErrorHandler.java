@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 @RestControllerAdvice
@@ -20,6 +22,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     private static final String NOT_FOUND_ERROR_CODE = "404";
     private static final String CONFLICT_ERROR_CODE = "409";
     private static final String BAD_REQUEST_ERROR_CODE = "400";
+    private static final String INTERNAL_ERROR = "500";
     private final MessageSource messageSource;
 
     @Autowired
@@ -51,6 +54,13 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         message = String.format(message, ex.getName());
         String errorCode = CONFLICT_ERROR_CODE + ex.getCode();
         return new HttpErrorResponse(message, errorCode);
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public final HttpErrorResponse handleAnyOtherError(Exception ex, Locale locale) {
+        String message = this.getLocalizedMessage(ErrorConstraint.INTERNAL, locale);
+        return new HttpErrorResponse(message + ": " + ex    , INTERNAL_ERROR);
     }
 
     private String getLocalizedMessage(String code, Locale locale) {

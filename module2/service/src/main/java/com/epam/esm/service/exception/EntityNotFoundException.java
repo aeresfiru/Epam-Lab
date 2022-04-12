@@ -1,8 +1,12 @@
 package com.epam.esm.service.exception;
 
 public class EntityNotFoundException extends RuntimeException {
-    private final long id;
+    private long id;
     private final ErrorCode code;
+
+    public EntityNotFoundException(ErrorCode code) {
+        this.code = code;
+    }
 
     public EntityNotFoundException(long id, ErrorCode code) {
         this.id = id;

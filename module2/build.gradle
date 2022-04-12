@@ -6,7 +6,7 @@ buildscript {
 
 allprojects {
     group 'by.alex'
-    version '1.0-SNAPSHOT'
+    version '1.0.0'
 }
 
 def springVersion = '5.3.16'
@@ -75,7 +75,7 @@ subprojects {
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
         // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
-        implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.2'
+        implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
     }
 
     test {

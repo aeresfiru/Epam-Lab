@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 /**
  * CertificateUpdateQueryCreator
@@ -35,6 +36,9 @@ public class CertificateUpdateQueryCreator implements PreparedStatementCreator {
     public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
         creator.tableName(TABLE_NAME);
         config.getParamsValueMap().remove(TAGS);
+        config.getParamsValueMap().remove(CertificateColumn.LAST_UPDATE.getNameInRequest());
+        config.getParamsValueMap().remove(CertificateColumn.CREATE_DATE.getNameInRequest());
+        config.getParamsValueMap().put(CertificateColumn.LAST_UPDATE.getNameInDb(), LocalDateTime.now());
         creator.setParameters(config.getParamsValueMap());
         creator.addWhere(ID, String.valueOf(config.getCertificateId()), WhereInfo.WhereOperator.EQUALS);
         return con.prepareStatement(creator.createSqlQuery());
