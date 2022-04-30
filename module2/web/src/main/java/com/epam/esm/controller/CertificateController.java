@@ -21,14 +21,9 @@ public class CertificateController {
     }
 
     @GetMapping
-    public List<CertificateDto> readAll() {
-        return service.readAllCertificates();
-    }
-
-    @GetMapping("/query")
-    public List<CertificateDto> readAllBySearchQuery(@RequestParam("search") Optional<String> searchQuery,
+    public List<CertificateDto> readAllBySearchQuery(@RequestParam("query") Optional<String> searchQuery,
                                                      @RequestParam("tag") Optional<List<String>> tagNames,
-                                                     @RequestParam("sort") Optional<String> sortingParameters) {
+                                                     @RequestParam(value = "sort", defaultValue = "-id") Optional<String> sortingParameters) {
         return service.readCertificateByFilterQuery(searchQuery, tagNames, sortingParameters);
     }
 

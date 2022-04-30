@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: prod
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum CertificateColumn {
+    ID("id", "id"),
     NAME("name", "name"),
     DATE("date", "create_date"),
     LAST_UPDATE("lastUpdateDate", "last_update_date"),

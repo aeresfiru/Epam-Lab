@@ -85,7 +85,6 @@ public class JdbcCertificateDaoImpl implements CertificateDao {
     }
 
     @Override
-    @Deprecated
     public boolean update(Certificate certificate) {
         throw new UnsupportedOperationException("Deprecated method, use update(config) instead.");
     }
