@@ -2,6 +2,7 @@ package com.epam.esm.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.hateoas.RepresentationModel;
 
 /**
@@ -15,7 +16,16 @@ import org.springframework.hateoas.RepresentationModel;
 @EqualsAndHashCode(callSuper = true)
 public class UserRegistrationDto extends RepresentationModel<UserRegistrationDto> {
 
-    private final String login;
+    private String username;
 
-    private final String password;
+    private String firstName;
+
+    private String lastName;
+
+    private String email;
+
+    @Length(max = 60)
+    private String password;
+
+    private String matchingPassword;
 }

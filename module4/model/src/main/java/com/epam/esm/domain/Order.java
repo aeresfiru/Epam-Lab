@@ -32,7 +32,7 @@ public class Order extends BaseEntity {
     @ToString.Exclude
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "cost", nullable = false)
     private BigDecimal cost;
 
     @ManyToMany(fetch = FetchType.EAGER)

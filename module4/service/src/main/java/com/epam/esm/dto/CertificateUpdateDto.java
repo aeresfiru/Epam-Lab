@@ -29,7 +29,7 @@ public class CertificateUpdateDto extends RepresentationModel<CertificateUpdateD
     @Size(min = 3, max = 250)
     private String description;
 
-    @DecimalMin(value = "1.00")
+    @DecimalMin(value = "0.01")
     private BigDecimal price;
 
     @Positive

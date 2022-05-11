@@ -3,8 +3,6 @@ package com.epam.esm.repository;
 import com.epam.esm.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 /**
  * UserRepository
  *
@@ -14,5 +12,7 @@ import java.util.Optional;
  */
 public interface UserRepository extends JpaRepository<User,Long> {
 
-    Optional<User> findUserByLogin(String login);
+    User findUserByEmail(String email);
+
+    User findByUsername(String username);
 }

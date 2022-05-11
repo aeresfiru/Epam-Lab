@@ -9,13 +9,21 @@ allprojects {
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+
+    repositories {
+        mavenCentral()
+    }
+
+    springBoot {
+        mainClass = 'com.epam.esm.Application'
+    }
 }
 
 subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
-    
+
     repositories {
         mavenCentral()
     }
@@ -31,16 +39,20 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-hateoas'
         implementation 'org.springframework.boot:spring-boot-starter-validation'
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
         compileOnly 'org.projectlombok:lombok'
         developmentOnly 'org.springframework.boot:spring-boot-devtools'
-        // https://mvnrepository.com/artifact/com.h2database/h2
+
+        // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+        implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
         runtimeOnly group: 'com.h2database', name: 'h2', version: '2.1.212'
         runtimeOnly 'mysql:mysql-connector-java'
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-        // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+
         implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
     }
 

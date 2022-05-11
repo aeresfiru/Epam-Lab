@@ -33,23 +33,19 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class Certificate extends BaseEntity {
 
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "description",nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(name = "price",nullable = false)
     private BigDecimal price;
 
-    @Column(nullable = false)
+    @Column(name = "duration",nullable = false)
     private Short duration;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {
-                    CascadeType.MERGE,
-                    CascadeType.REFRESH
-            })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "gift_certificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName = "id",
                     nullable = false, updatable = false),
@@ -76,10 +72,5 @@ public class Certificate extends BaseEntity {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public void addTag(Tag tag) {
-        tag.getCertificates().add(this);
-        this.tags.add(tag);
     }
 }

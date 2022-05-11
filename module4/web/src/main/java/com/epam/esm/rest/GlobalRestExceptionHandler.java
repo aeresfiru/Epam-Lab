@@ -34,7 +34,7 @@ import java.util.Locale;
 @Slf4j
 @RestControllerAdvice
 @AllArgsConstructor
-public class RestErrorHandler extends ResponseEntityExceptionHandler {
+public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final String REQUEST_INCORRECT_VALUE_MESSAGE = "request.incorrect-value";
     private static final String REQUEST_INCORRECT_PARAM_MESSAGE = "request.incorrect-param";
@@ -74,8 +74,7 @@ public class RestErrorHandler extends ResponseEntityExceptionHandler {
                                             WebRequest request,
                                             Locale locale) {
         log.warn("IllegalAccessException occurred: ", ex);
-        String[] messages =
-                new String[]{this.getLocalizedMessage(ex.getMessage(), locale)};
+        String[] messages = new String[]{this.getLocalizedMessage(ex.getMessage(), locale)};
         return new ErrorMessage(HttpStatus.FORBIDDEN.value(), new Date(),
                 messages, request.getDescription(false));
     }

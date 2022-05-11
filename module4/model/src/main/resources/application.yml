@@ -1,6 +1,8 @@
 spring:
   profiles:
-    active: dev
+    active: prod
+  main:
+    allow-circular-references: true
   data:
     web:
       pageable:

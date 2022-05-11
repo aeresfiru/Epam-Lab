@@ -1,4 +1,4 @@
-INSERT INTO `tag`(name, created, updated, status)
+/*INSERT INTO `tag`(name, created, updated, status)
 VALUES ('Tag 1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE'),
        ('Tag 2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE'),
        ('Tag 3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE');
@@ -29,3 +29,4 @@ VALUES (1, 1),
        (2, 3),
        (3, 2),
        (3, 3);
+*/

@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -33,11 +34,11 @@ public abstract class BaseEntity implements Serializable {
 
     @CreationTimestamp
     @Column(name = "created", updatable = false)
-    private LocalDateTime createDate;
+    private Date createDate;
 
     @UpdateTimestamp
     @Column(name = "updated")
-    private LocalDateTime lastUpdateDate;
+    private Date lastUpdateDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

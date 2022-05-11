@@ -6,10 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -29,11 +26,26 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class User extends BaseEntity {
 
-    @Column(unique = true)
-    private String login;
+    @Column(name = "first_name")
+    private String firstName;
 
-    @Column(nullable = false)
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "username", unique = true)
+    private String username;
+
+    @Column(name = "email", unique = true)
+    private String email;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private Set<Role> roles;
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
@@ -54,12 +66,5 @@ public class User extends BaseEntity {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public void removeOrder(Order order) {
-        if (orders.contains(order)) {
-            orders.remove(order);
-            order.setUser(null);
-        }
     }
 }

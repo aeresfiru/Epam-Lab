@@ -12,16 +12,15 @@ import com.epam.esm.service.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.epam.esm.repository.specification.CertificateSpecification.*;
 import static org.springframework.data.jpa.domain.Specification.where;
@@ -83,8 +82,14 @@ public class CertificateServiceImpl implements CertificateService {
     public Certificate create(Certificate certificate) {
         log.info("IN create - creating certificate: {}", certificate);
         checkForDuplicate(certificate.getName());
-        addTags(certificate);
-        return certificateRepository.save(certificate);
+        Set<Tag> tags = new HashSet<>(certificate.getTags());
+        certificate.getTags().clear();
+        Certificate created = certificateRepository.save(certificate);
+        if (!CollectionUtils.isEmpty(tags)) {
+            certificate.setTags(tags);
+            created = certificateRepository.save(certificate);
+        }
+        return created;
     }
 
     @Override
@@ -114,35 +119,21 @@ public class CertificateServiceImpl implements CertificateService {
         certificateRepository.save(certificate);
     }
 
-    private void addTags(Certificate certificate) {
-        Set<Tag> tags = new HashSet<>(certificate.getTags());
-        if (!CollectionUtils.isEmpty(tags)) {
-            certificate.getTags().clear();
-            tags.forEach(tag -> {
-                if (!tagRepository.existsByName(tag.getName())) {
-                    tagRepository.save(tag);
-                }
-                certificate.addTag(tag);
-            });
-        }
-    }
-
     private void updateCertificateFields(Certificate certificateToUpdate, Certificate certificate) {
-        if (certificate.getName() != null) {
+        if (Objects.nonNull(certificate.getName()) && !"".equalsIgnoreCase(certificate.getName())) {
             certificateToUpdate.setName(certificate.getName());
         }
-        if (certificate.getDescription() != null) {
+        if (Objects.nonNull(certificate.getDescription()) && !"".equalsIgnoreCase(certificate.getDescription())) {
             certificateToUpdate.setDescription(certificate.getDescription());
         }
-        if (certificate.getPrice() != null) {
+        if (Objects.nonNull(certificate.getPrice())) {
             certificateToUpdate.setPrice(certificate.getPrice());
         }
-        if (certificate.getDuration() != null) {
+        if (Objects.nonNull(certificate.getDuration())) {
             certificateToUpdate.setDuration(certificate.getDuration());
         }
         if (certificate.getTags() != null) {
             certificateToUpdate.setTags(certificate.getTags());
-            addTags(certificateToUpdate);
         }
     }
 

@@ -26,7 +26,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class Tag extends BaseEntity {
 
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)

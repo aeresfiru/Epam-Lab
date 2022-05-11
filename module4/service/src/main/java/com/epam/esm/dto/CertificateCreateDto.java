@@ -5,10 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.Valid;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +21,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class CertificateCreateDto extends RepresentationModel<CertificateCreateDto> {
 
-    @NotNull
+    @NotBlank
     @Size(min = 2, max = 50)
     private String name;
 
@@ -32,7 +29,7 @@ public class CertificateCreateDto extends RepresentationModel<CertificateCreateD
     private String description;
 
     @NotNull
-    @DecimalMin(value = "1.00")
+    @DecimalMin(value = "0.01")
     private BigDecimal price;
 
     @NotNull
