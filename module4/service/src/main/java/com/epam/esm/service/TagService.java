@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.domain.Tag;
-import com.epam.esm.dto.TagDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,13 +13,13 @@ import org.springframework.data.domain.Pageable;
  */
 public interface TagService {
 
-    Tag findById(long id);
+    Tag findById(Long id);
 
     Page<Tag> findAll(Pageable pagination);
 
     Tag findPopularTagOfRichestUser();
 
-    Tag create(Tag dto);
+    Tag create(Tag tag);
 
-    void delete(long id);
+    void delete(Long id);
 }

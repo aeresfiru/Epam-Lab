@@ -1,19 +1,18 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.domain.Tag;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.DuplicateEntityException;
 import com.epam.esm.service.ExceptionConstant;
-import com.epam.esm.service.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 /**
  * TagServiceImpl
@@ -30,10 +29,9 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
 
     @Override
-    public Tag findById(long id) {
+    public Tag findById(Long id) {
         log.info("IN findTagById - id : {}", id);
-        return tagRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(id, ExceptionConstant.RESOURCE_NOT_FOUND));
+        return tagRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
@@ -58,10 +56,10 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public void delete(long id) {
+    public void delete(Long id) {
         log.info("IN delete tag, id: {}", id);
         if (!tagRepository.existsById(id)) {
-            throw new ResourceNotFoundException(id, ExceptionConstant.RESOURCE_NOT_FOUND);
+            throw new EntityNotFoundException();
         }
         tagRepository.deleteById(id);
     }

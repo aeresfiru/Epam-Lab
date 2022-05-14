@@ -1,4 +1,4 @@
-package com.epam.esm.controller.util;
+package com.epam.esm.service.validator;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

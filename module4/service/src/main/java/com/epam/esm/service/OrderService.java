@@ -13,15 +13,11 @@ import org.springframework.data.domain.Pageable;
  */
 public interface OrderService {
 
-    Order findByUserIdAndOrderId(Long userId, Long orderId) throws IllegalAccessException;
-
     Order findById(Long orderId);
 
-    Page<Order> findUserOrders(long userId, Pageable pageable);
+    Page<Order> findUserOrders(Long userId, Pageable pageable);
 
-    Order create(Order dto);
+    Order create(Order order);
 
     void deleteById(Long orderId);
-
-    void deleteById(Long userId, Long orderId) throws IllegalAccessException;
 }

@@ -15,19 +15,15 @@ import java.util.List;
  */
 public interface CertificateService {
 
-    Certificate findById(long id);
-
-    Page<Certificate> findAll(Pageable pageable);
+    Certificate findById(Long id);
 
     Page<Certificate> findAll(String query, List<String> tagNames, Pageable pageable);
 
-    Page<Certificate> findAllActiveCertificates(Pageable pageable);
-
     Page<Certificate> findAllActiveCertificates(String query, List<String> tagNames, Pageable pageable);
 
-    Certificate create(Certificate dto);
+    void create(Certificate certificate);
 
-    Certificate update(Certificate dto, long id);
+    Certificate update(Certificate certificate, Long id);
 
-    void delete(long id);
+    void delete(Long id);
 }

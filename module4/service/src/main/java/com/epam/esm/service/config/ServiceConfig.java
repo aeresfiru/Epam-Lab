@@ -1,4 +1,4 @@
-package com.epam.esm.config;
+package com.epam.esm.service.config;
 
 import com.epam.esm.service.ExceptionResult;
 import org.modelmapper.ModelMapper;

@@ -1,4 +1,4 @@
-package com.epam.esm.model;
+package com.epam.esm.service.model;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import lombok.Data;
  * @since 11.05.22
  */
 @Data
-public class AuthenticationDto {
+public class AuthenticationModel {
 
     private String username;
     private String password;

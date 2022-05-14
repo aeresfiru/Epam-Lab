@@ -10,7 +10,7 @@ import lombok.Data;
  * @since 11.05.22
  */
 @Data
-public class CredentialsResponse {
+public class JwtAuthResponse {
 
     private final String username;
     private final String token;

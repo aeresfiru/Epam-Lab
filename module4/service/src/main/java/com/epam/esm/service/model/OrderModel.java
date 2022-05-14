@@ -1,4 +1,4 @@
-package com.epam.esm.model;
+package com.epam.esm.service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

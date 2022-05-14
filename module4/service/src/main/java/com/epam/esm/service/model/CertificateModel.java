@@ -1,4 +1,4 @@
-package com.epam.esm.model;
+package com.epam.esm.service.model;
 
 import com.epam.esm.domain.Status;
 import com.epam.esm.service.validator.OnPersist;
