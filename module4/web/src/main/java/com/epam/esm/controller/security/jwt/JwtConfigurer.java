@@ -1,6 +1,6 @@
-package com.epam.esm.service.security.jwt;
+package com.epam.esm.controller.security.jwt;
 
-import com.epam.esm.service.security.jwt.filter.JwtTokenFilter;
+import com.epam.esm.controller.security.jwt.filter.JwtTokenFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

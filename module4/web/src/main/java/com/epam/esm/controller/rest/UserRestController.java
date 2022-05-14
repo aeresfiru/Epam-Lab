@@ -1,13 +1,13 @@
-package com.epam.esm.rest;
+package com.epam.esm.controller.rest;
 
+import com.epam.esm.controller.util.SortTypeMapConverter;
 import com.epam.esm.domain.Order;
 import com.epam.esm.domain.User;
-import com.epam.esm.model.OrderCreateModel;
-import com.epam.esm.model.OrderModel;
-import com.epam.esm.model.UserModel;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
-import com.epam.esm.util.SortTypeMapConverter;
+import com.epam.esm.service.model.OrderCreateModel;
+import com.epam.esm.service.model.OrderModel;
+import com.epam.esm.service.model.UserModel;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -17,6 +17,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,6 +36,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
+@PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
 public class UserRestController {
 
     private final OrderService orderService;
@@ -77,14 +79,6 @@ public class UserRestController {
         return CollectionModel.of(orders, link);
     }
 
-    @GetMapping("/{userId}/orders/{orderId}")
-    public ResponseEntity<OrderModel> findById(@PathVariable @Positive Long userId,
-                                               @PathVariable @Positive Long orderId) {
-        OrderModel order = mapper.map(orderService.findById(orderId), OrderModel.class);
-        this.addSelfRelLink(order);
-        return ResponseEntity.ok(order);
-    }
-
     @PostMapping("/{userId}/orders")
     public ResponseEntity<OrderModel> makeOrder(@RequestBody @Valid OrderCreateModel orderCreateModel,
                                                 @PathVariable @Positive Long userId) {
@@ -93,13 +87,6 @@ public class UserRestController {
         OrderModel dto = mapper.map(orderService.create(order), OrderModel.class);
         this.addSelfRelLink(dto);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{userId}/orders/{orderId}")
-    public void deleteOrder(@PathVariable @Positive Long userId,
-                            @PathVariable @Positive Long orderId) {
-        orderService.deleteById(orderId);
     }
 
     private void addSelfRelLink(UserModel user) {

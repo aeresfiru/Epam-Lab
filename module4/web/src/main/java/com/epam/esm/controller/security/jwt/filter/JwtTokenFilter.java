@@ -1,6 +1,6 @@
-package com.epam.esm.service.security.jwt.filter;
+package com.epam.esm.controller.security.jwt.filter;
 
-import com.epam.esm.service.security.jwt.JwtTokenProvider;
+import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

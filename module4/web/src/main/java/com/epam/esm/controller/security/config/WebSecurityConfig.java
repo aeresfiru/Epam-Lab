@@ -1,8 +1,7 @@
-package com.epam.esm.controller.security;
+package com.epam.esm.controller.security.config;
 
-import com.epam.esm.controller.rest.handler.RestAccessDeniedHandler;
-import com.epam.esm.controller.rest.handler.RestAuthenticationFailureHandler;
 import com.epam.esm.controller.security.jwt.JwtConfigurer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -60,19 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(WHITE_LIST_URLS).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler())
-                .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
-    }
-
-    @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new RestAuthenticationFailureHandler();
-    }
-
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new RestAccessDeniedHandler();
     }
 }

@@ -1,9 +1,9 @@
-package com.epam.esm.rest;
+package com.epam.esm.controller.rest;
 
+import com.epam.esm.controller.util.SortTypeMapConverter;
 import com.epam.esm.domain.Certificate;
-import com.epam.esm.model.CertificateModel;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.util.SortTypeMapConverter;
+import com.epam.esm.service.model.CertificateModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -36,6 +37,7 @@ public class CertificateRestController {
     private final ModelMapper mapper;
 
     @GetMapping
+    @PermitAll
     public CollectionModel<CertificateModel> findAll(@RequestParam(required = false) String query,
                                                      @RequestParam(required = false, value = "tag") List<String> tagNames,
                                                      @RequestParam(defaultValue = "0") int page,
@@ -53,6 +55,7 @@ public class CertificateRestController {
     }
 
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<CertificateModel> findById(@PathVariable @Positive Long id) {
         CertificateModel certificate = mapToCertificateModel(service.findById(id));
         addSelfRelLink(certificate);

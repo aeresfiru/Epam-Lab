@@ -1,4 +1,4 @@
-package com.epam.esm.util;
+package com.epam.esm.controller.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;

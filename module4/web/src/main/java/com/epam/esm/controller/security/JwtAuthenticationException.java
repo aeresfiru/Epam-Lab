@@ -1,4 +1,4 @@
-package com.epam.esm.security;
+package com.epam.esm.controller.security;
 
 import org.springframework.security.core.AuthenticationException;
 

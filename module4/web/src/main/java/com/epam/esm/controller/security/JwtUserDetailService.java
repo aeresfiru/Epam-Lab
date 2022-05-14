@@ -1,9 +1,9 @@
-package com.epam.esm.service.security;
+package com.epam.esm.controller.security;
 
 import com.epam.esm.domain.User;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.security.jwt.JwtUser;
-import com.epam.esm.service.security.jwt.JwtUserFactory;
+import com.epam.esm.controller.security.jwt.JwtUser;
+import com.epam.esm.controller.security.jwt.JwtUserFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,9 +29,7 @@ public class JwtUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.findByUsername(username);
 
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found, username {}: " + username);
-        }
+        if (user == null) throw new UsernameNotFoundException("User not found, username: " + username);
 
         JwtUser jwtUser = JwtUserFactory.create(user);
         log.info("IN loadUserByUsername - user with username {}, successfully loaded", username);

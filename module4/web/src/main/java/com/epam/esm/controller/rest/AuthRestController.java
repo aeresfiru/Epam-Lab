@@ -1,21 +1,15 @@
-package com.epam.esm.rest;
+package com.epam.esm.controller.rest;
 
+import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 import com.epam.esm.domain.User;
-import com.epam.esm.model.AuthenticationDto;
-import com.epam.esm.model.CredentialsResponse;
-import com.epam.esm.model.UserModel;
-import com.epam.esm.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.AuthService;
-import com.epam.esm.service.UserService;
+import com.epam.esm.service.model.AuthenticationModel;
+import com.epam.esm.service.model.JwtAuthResponse;
+import com.epam.esm.service.model.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,40 +24,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Slf4j
-public class AuthenticationRestController {
+@PreAuthorize("!hasRole('ROLE_ADMIN') && !hasRole('ROLE_USER')")
+public class AuthRestController {
 
-    private final UserService userService;
-
-    private final AuthenticationManager authenticationManager;
-
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
     private final ModelMapper modelMapper;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     @PostMapping("/login")
-    public CredentialsResponse login(@RequestBody AuthenticationDto authenticationDto) {
-        try {
-            String username = authenticationDto.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    username,
-                    authenticationDto.getPassword())
-            );
-            User user = userService.findByUsername(username);
-            if (user == null) {
-                throw new UsernameNotFoundException("User with username:" + username + ", not found");
-            }
-            String token = jwtTokenProvider.createToken(username, user.getRoles());
-            return new CredentialsResponse(username, token);
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Wrong username or password");
-        }
+    public JwtAuthResponse login(@RequestBody AuthenticationModel authenticationModel) {
+        User user = authService.login(authenticationModel);
+        return createJwtAuthResponse(user);
     }
 
     @PostMapping("/signup")
-    public CredentialsResponse signup(@RequestBody UserModel userModel) {
+    public void signup(@RequestBody UserModel userModel) {
         User user = modelMapper.map(userModel, User.class);
-        userService.signup(user);
-
+        authService.signup(user);
     }
 
+    private JwtAuthResponse createJwtAuthResponse(User user) {
+        String token = jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
+        return new JwtAuthResponse(user.getUsername(), token);
+    }
 }

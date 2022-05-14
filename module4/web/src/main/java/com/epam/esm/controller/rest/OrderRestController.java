@@ -1,12 +1,13 @@
-package com.epam.esm.rest;
+package com.epam.esm.controller.rest;
 
-import com.epam.esm.model.OrderModel;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.service.model.OrderModel;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
@@ -23,6 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/orders")
+@PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
 public class OrderRestController {
 
     private final OrderService orderService;
