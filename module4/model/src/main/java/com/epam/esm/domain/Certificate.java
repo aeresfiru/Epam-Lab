@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.SelectBeforeUpdate;
+import org.hibernate.annotations.*;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -23,7 +25,7 @@ import java.util.Set;
  * @since 17.04.22
  */
 @Entity
-@Table(name = "gift_certificate")
+@Table(name = "certificates")
 @DynamicInsert
 @DynamicUpdate
 @SelectBeforeUpdate
@@ -31,7 +33,11 @@ import java.util.Set;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Certificate extends BaseEntity {
+public class Certificate {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name", unique = true)
     private String name;
@@ -45,6 +51,18 @@ public class Certificate extends BaseEntity {
     @Column(name = "duration",nullable = false)
     private Short duration;
 
+    @CreationTimestamp
+    @Column(name = "create_date", updatable = false)
+    private LocalDateTime createDate;
+
+    @UpdateTimestamp
+    @Column(name = "last_update_date")
+    private LocalDateTime lastUpdateDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status = Status.ACTIVE;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "gift_certificate_tag",
             joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName = "id",
@@ -57,8 +75,8 @@ public class Certificate extends BaseEntity {
     @ToString.Exclude
     private Set<Order> orders = new HashSet<>();
 
-    public Certificate(long id) {
-        super(id);
+    public Certificate(Long id) {
+        this.id = id;
     }
 
     @Override
@@ -66,7 +84,7 @@ public class Certificate extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Certificate that = (Certificate) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override

@@ -19,12 +19,16 @@ import java.util.Set;
  * @since 16.04.22
  */
 @Entity
-@Table(name = "tag")
+@Table(name = "tags")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Tag extends BaseEntity {
+public class Tag {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name", unique = true)
     private String name;
@@ -34,7 +38,7 @@ public class Tag extends BaseEntity {
     private Set<Certificate> certificates = new HashSet<>();
 
     public Tag(final Long id) {
-        super(id);
+        this.id = id;
     }
 
     @PreRemove
@@ -49,7 +53,7 @@ public class Tag extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Tag tag = (Tag) o;
-        return getId() != null && Objects.equals(getId(), tag.getId());
+        return id != null && Objects.equals(id, tag.id);
     }
 
     @Override

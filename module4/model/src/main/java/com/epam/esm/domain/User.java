@@ -5,8 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -19,12 +22,16 @@ import java.util.Set;
  * @since 18.04.22
  */
 @Entity
-@Table(name = "account")
+@Table(name = "users")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class User extends BaseEntity {
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -41,6 +48,18 @@ public class User extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @CreationTimestamp
+    @Column(name = "create_date", updatable = false)
+    private Date createDate;
+
+    @UpdateTimestamp
+    @Column(name = "last_update_date")
+    private Date lastUpdateDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status = Status.ACTIVE;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
@@ -52,7 +71,7 @@ public class User extends BaseEntity {
     private Set<Order> orders = new HashSet<>();
 
     public User(final Long id) {
-        super(id);
+        this.id = id;
     }
 
     @Override
@@ -60,7 +79,7 @@ public class User extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         User user = (User) o;
-        return getId() != null && Objects.equals(getId(), user.getId());
+        return id != null && Objects.equals(id, user.id);
     }
 
     @Override
