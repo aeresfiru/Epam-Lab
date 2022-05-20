@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.CreateOrderDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.repository.Pagination;
 
@@ -20,9 +21,5 @@ public interface OrderService {
 
     List<OrderDto> findUserOrders(long userId, Pagination pagination);
 
-    OrderDto create(OrderDto dto);
-
-    void deleteById(Long orderId);
-
-    void deleteById(Long userId, Long orderId) throws IllegalAccessException;
+    OrderDto create(CreateOrderDto dto);
 }

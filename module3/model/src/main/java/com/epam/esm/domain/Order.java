@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -20,22 +22,30 @@ import java.util.Set;
  * @since 18.04.22
  */
 @Entity
-@Table(name = "user_order")
+@Table(name = "orders")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Order extends BaseEntity {
+public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "cost", nullable = false)
     private BigDecimal cost;
 
-    @ManyToMany
+    @CreationTimestamp
+    @Column(name = "create_date", updatable = false)
+    private Date createDate;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_order_gift_certificate",
             joinColumns = @JoinColumn(name = "user_order_id"),
             inverseJoinColumns = @JoinColumn(name = "gift_certificate_id"))
@@ -43,7 +53,7 @@ public class Order extends BaseEntity {
     private Set<Certificate> certificates = new HashSet<>();
 
     public Order(long id) {
-        super(id);
+        this.id = id;
     }
 
     @Override
@@ -51,7 +61,7 @@ public class Order extends BaseEntity {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Order order = (Order) o;
-        return getId() != null && Objects.equals(getId(), order.getId());
+        return id != null && Objects.equals(id, order.id);
     }
 
     @Override

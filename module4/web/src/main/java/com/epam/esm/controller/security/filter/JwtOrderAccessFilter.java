@@ -1,10 +1,14 @@
 package com.epam.esm.controller.security.jwt.filter;
 
+import com.epam.esm.controller.rest.handler.ApiError;
+import com.epam.esm.controller.security.JwtAuthenticationException;
 import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 import com.epam.esm.domain.User;
 import com.epam.esm.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,6 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
 
 /**
  * JwtOrderAccessFilter
@@ -38,18 +44,17 @@ public class JwtOrderAccessFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain chain)
             throws ServletException, IOException {
 
+        log.info("IN doFilterInternal");
         String uri = req.getRequestURI();
-        if (!uri.contains(USERS) && !uri.contains(ORDERS)) {
-            chain.doFilter(req, resp);
-            return;
-        }
-        log.info("In JwtOrderAccessFilter - user trying to access order, uri: {}", uri);
+        if (uri.contains(USERS) && uri.contains(ORDERS)) {
+            log.info("In JwtOrderAccessFilter - user trying to access order, uri: {}", uri);
 
-        User user = getUserFromRequest(req);
-        boolean haveAccessToOrder = isUserHaveAccessToOrder(user, uri);
+            User user = getUserFromRequest(req);
+            boolean haveAccessToOrder = isUserHaveAccessToOrder(user, uri);
 
-        if (!haveAccessToOrder) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            if (!haveAccessToOrder) {
+                throw new JwtAuthenticationException("User tries to access not owned order");
+            }
         }
         chain.doFilter(req, resp);
     }

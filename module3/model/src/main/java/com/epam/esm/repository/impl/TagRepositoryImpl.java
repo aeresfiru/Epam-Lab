@@ -21,18 +21,18 @@ public class TagRepositoryImpl extends AbstractRepository<Tag>
         implements TagRepository {
 
     private static final String FIND_MOST_WIDELY_USED_TAG_OF_USER_WITH_HIGHEST_COST_OF_ALL_ORDERS_QUERY =
-            "SELECT tag.id, tag.name, tag.created, tag.updated, tag.status\n"
-                    + "FROM user_order\n"
-                    + "         LEFT JOIN user_order_gift_certificate uogc ON uogc.user_order_id = user_order.id\n"
-                    + "         LEFT JOIN gift_certificate gc on uogc.gift_certificate_id = gc.id\n"
+            "SELECT tags.id, tags.name\n"
+                    + "FROM orders\n"
+                    + "         LEFT JOIN user_order_gift_certificate uogc ON uogc.user_order_id = orders.id\n"
+                    + "         LEFT JOIN certificates gc on uogc.gift_certificate_id = gc.id\n"
                     + "         INNER JOIN gift_certificate_tag gct on gc.id = gct.gift_certificate_id\n"
-                    + "         LEFT JOIN tag ON gct.tag_id = tag.id\n"
-                    + "WHERE user_order.user_id = (SELECT user_order.user_id\n"
-                    + "                            FROM user_order\n"
-                    + "                            GROUP BY user_order.user_id\n"
-                    + "                            ORDER BY SUM(user_order.cost) DESC\n"
+                    + "         LEFT JOIN tags ON gct.tag_id = tags.id\n"
+                    + "WHERE orders.user_id = (SELECT orders.user_id\n"
+                    + "                            FROM orders\n"
+                    + "                            GROUP BY orders.user_id\n"
+                    + "                            ORDER BY SUM(orders.cost) DESC\n"
                     + "                            LIMIT 1)\n"
-                    + "GROUP BY tag.id, tag.name, user_order.user_id\n"
+                    + "GROUP BY tags.id, tags.name, orders.user_id\n"
                     + "LIMIT 1";
 
     private static final String SELECT_BY_NAME =

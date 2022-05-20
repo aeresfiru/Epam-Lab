@@ -1,5 +1,7 @@
 package com.epam.esm.rest;
 
+import com.epam.esm.domain.Order;
+import com.epam.esm.dto.CreateOrderDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.repository.Pagination;
@@ -35,7 +37,7 @@ public class UserRestController {
 
     @GetMapping
     public CollectionModel<UserDto> findAllUsers(@RequestParam(required = false, defaultValue = "1") Integer page,
-                                        @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+                                                 @RequestParam(name = "size", required = false, defaultValue = "10") Integer pageSize) {
         List<UserDto> users = userService.findAll(new Pagination(page, pageSize));
         users.forEach(this::addSelfRelLink);
         Link link = linkTo(methodOn(this.getClass())
@@ -52,8 +54,8 @@ public class UserRestController {
 
     @GetMapping("/{userId}/orders")
     public CollectionModel<OrderDto> findUserOrders(@PathVariable Long userId,
-                                         @RequestParam(required = false, defaultValue = "1") Integer page,
-                                         @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+                                                    @RequestParam(required = false, defaultValue = "1") Integer page,
+                                                    @RequestParam(name = "size", required = false, defaultValue = "10") Integer pageSize) {
 
         List<OrderDto> orders = orderService.findUserOrders(userId, new Pagination(page, pageSize));
         orders.forEach(this::addSelfRelLink);
@@ -72,19 +74,11 @@ public class UserRestController {
     }
 
     @PostMapping("/{userId}/orders")
-    public ResponseEntity<OrderDto> makeOrder(@RequestBody OrderDto order, @PathVariable Long userId) {
-        UserDto user = new UserDto();
-        user.setId(userId);
-        order.setUser(user);
-        OrderDto orderDto = orderService.create(order);
-        this.addSelfRelLink(orderDto);
-        return new ResponseEntity<>(orderDto, HttpStatus.CREATED);
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{userId}/orders/{orderId}")
-    public void deleteOrder(@PathVariable Long userId, @PathVariable Long orderId) throws IllegalAccessException {
-        orderService.deleteById(userId, orderId);
+    public ResponseEntity<OrderDto> makeOrder(@RequestBody CreateOrderDto orderDto, @PathVariable Long userId) {
+        orderDto.setUserId(userId);
+        OrderDto order = orderService.create(orderDto);
+        this.addSelfRelLink(order);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     private void addSelfRelLink(UserDto userDto) {
@@ -93,7 +87,7 @@ public class UserRestController {
     }
 
     private void addSelfRelLink(OrderDto orderDto) {
-        Link link = linkTo(this.getClass()).slash(orderDto.getId()).withSelfRel();
+        Link link = linkTo(OrderRestController.class).slash(orderDto.getId()).withSelfRel();
         orderDto.add(link);
     }
 }

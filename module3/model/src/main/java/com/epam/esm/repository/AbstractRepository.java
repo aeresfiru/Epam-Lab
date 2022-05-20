@@ -1,6 +1,5 @@
 package com.epam.esm.repository;
 
-import com.epam.esm.domain.BaseEntity;
 import com.epam.esm.repository.builder.PageSettings;
 import com.epam.esm.repository.builder.QueryBuilder;
 import org.hibernate.Session;
@@ -24,7 +23,7 @@ import java.util.Optional;
  * @since 19.04.22
  */
 @Repository
-public abstract class AbstractRepository<T extends BaseEntity> {
+public abstract class AbstractRepository<T> {
 
     @PersistenceContext
     protected EntityManager em;

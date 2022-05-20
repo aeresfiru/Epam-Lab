@@ -32,7 +32,7 @@ public class CertificateRestController {
                                                    @RequestParam(value = "tag") Optional<List<String>> tagNames,
                                                    @RequestParam(defaultValue = "-id") String sort,
                                                    @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                                   @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+                                                   @RequestParam(value = "size", defaultValue = "5", required = false) int pageSize) {
 
         List<CertificateDto> certificates =
                 service.findAll(buildQueryParameters(tagNames, sort, query), new Pagination(page, pageSize));

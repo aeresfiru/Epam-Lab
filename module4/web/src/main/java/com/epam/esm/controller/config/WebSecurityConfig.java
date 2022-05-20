@@ -1,11 +1,17 @@
 package com.epam.esm.controller.security.config;
 
+import com.epam.esm.controller.rest.handler.RestAccessDeniedHandler;
+import com.epam.esm.controller.rest.handler.RestAuthenticationEntryPoint;
 import com.epam.esm.controller.security.jwt.JwtConfigurer;
+import com.epam.esm.controller.security.jwt.filter.JwtOrderAccessFilter;
+import com.epam.esm.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,12 +41,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String[] WHITE_LIST_URLS = {
-            "/",
-            "/signup",
-            "/login",
-            "/certificates/**"
-    };
+    private final UserService userService;
+
+    private final RestAccessDeniedHandler accessDeniedHandler;
+
+    private final RestAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     @Override
@@ -51,14 +56,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .httpBasic().disable()
                 .csrf().disable()
+                .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/certificates/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/signup", "/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/orders").fullyAuthenticated()
+                .antMatchers(HttpMethod.GET, "/tags/**", "/users/**").fullyAuthenticated()
+                .anyRequest().hasRole("ADMIN")
                 .and()
-                .authorizeRequests()
-                .antMatchers(WHITE_LIST_URLS).permitAll()
-                .anyRequest().authenticated()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint)
                 .and()
-                .apply(new JwtConfigurer(jwtTokenProvider));
+                .apply(new JwtConfigurer(jwtTokenProvider, userService));
     }
 }

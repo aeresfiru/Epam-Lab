@@ -1,21 +1,25 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.domain.Certificate;
 import com.epam.esm.domain.Order;
-import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.Mapper;
-import com.epam.esm.dto.OrderDto;
+import com.epam.esm.domain.User;
+import com.epam.esm.dto.*;
+import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.Pagination;
+import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.ExceptionConstant;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.ResourceNotFoundException;
 import com.epam.esm.service.validator.Validator;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -27,20 +31,19 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+
+    private final CertificateRepository certificateRepository;
+
+    private final UserRepository userRepository;
+
     private final Mapper<Order, OrderDto> mapper;
+
+    private final ModelMapper modelMapper;
     private final Validator<Pagination> paginationValidator;
-
-    public OrderServiceImpl(OrderRepository orderRepository,
-                            Mapper<Order, OrderDto> mapper,
-                            Validator<Pagination> paginationValidator) {
-
-        this.orderRepository = orderRepository;
-        this.mapper = mapper;
-        this.paginationValidator = paginationValidator;
-    }
 
     @Override
     public OrderDto findById(Long userId, Long orderId) throws IllegalAccessException {
@@ -73,40 +76,37 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDto create(OrderDto dto) {
-        log.info("IN create - order: {}", dto);
-        this.calculateCost(dto);
-        Order order = this.mapper.toEntity(dto);
+    public OrderDto create(CreateOrderDto createOrderDto) {
+        log.info("IN create - order: {}", createOrderDto);
+        Order order = new Order();
+        Set<Certificate> certificates = createOrderDto.getCertificates().stream()
+                .map(c -> modelMapper.map(c, Certificate.class))
+                .collect(Collectors.toSet());
+        order.setCertificates(certificates);
+
+        Optional<User> user = userRepository.findById(createOrderDto.getUserId());
+        if (user.isEmpty()) {
+            throw new ResourceNotFoundException(createOrderDto.getUserId(), ExceptionConstant.RESOURCE_NOT_FOUND);
+        }
+        order.setUser(user.get());
+
+        this.calculateCost(order);
         this.orderRepository.create(order);
         return this.mapper.toDto(order);
     }
 
-    @Override
-    @Transactional
-    public void deleteById(Long orderId) {
-        log.info("IN deleteById - orderId={}", orderId);
-        if (!orderRepository.findById(orderId).isPresent()) {
-            throw new ResourceNotFoundException(orderId, ExceptionConstant.RESOURCE_NOT_FOUND);
-        }
-        orderRepository.delete(orderId);
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(Long userId, Long orderId) throws IllegalAccessException {
-        log.info("IN deleteById - orderId={}, userId={}", orderId, userId);
-        OrderDto orderDto = findById(userId, orderId);
-        if (!orderDto.getUser().getId().equals(userId)) {
-            throw new IllegalAccessException(ExceptionConstant.ACCESS_DENIED);
-        }
-        orderRepository.delete(orderId);
-    }
-
-    private void calculateCost(OrderDto dto) {
+    private void calculateCost(Order order) {
         BigDecimal cost = new BigDecimal("0.00");
-        for (CertificateDto certificateDto : dto.getCertificates()) {
-            cost = cost.add(certificateDto.getPrice());
+        Set<Certificate> certificates = new HashSet<>();
+        for (Certificate c : order.getCertificates()) {
+            Optional<Certificate> certificate = certificateRepository.findById(c.getId());
+            if (!certificate.isPresent()) {
+                throw new ResourceNotFoundException(order.getId(), ExceptionConstant.RESOURCE_NOT_FOUND);
+            }
+            certificates.add(certificate.get());
+            cost = cost.add(certificate.get().getPrice());
         }
-        dto.setCost(cost);
+        order.setCertificates(certificates);
+        order.setCost(cost);
     }
 }

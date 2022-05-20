@@ -25,7 +25,7 @@ public class TagRestController {
     @GetMapping
     public CollectionModel<TagDto> findAllTags(
             @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+            @RequestParam(value = "size", defaultValue = "5", required = false) int pageSize) {
 
         List<TagDto> tags = tagService.findAll(new Pagination(page, pageSize));
         tags.forEach(this::addSelfRelLink);

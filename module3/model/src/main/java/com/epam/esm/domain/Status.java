@@ -9,5 +9,5 @@ package com.epam.esm.domain;
  */
 public enum Status {
 
-    ACTIVE, NOT_ACTIVE, DELETED;
+    ACTIVE, NOT_ACTIVE, DELETED
 }

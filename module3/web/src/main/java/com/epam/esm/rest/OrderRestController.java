@@ -31,12 +31,6 @@ public class OrderRestController {
         return new ResponseEntity<>(orderDto, HttpStatus.OK);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
-        orderService.deleteById(id);
-    }
-
     private void addSelfRelLink(OrderDto orderDto) {
         Link link = linkTo(this.getClass()).slash(orderDto.getId()).withSelfRel();
         orderDto.add(link);
