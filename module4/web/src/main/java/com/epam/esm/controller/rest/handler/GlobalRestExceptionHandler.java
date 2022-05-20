@@ -45,6 +45,7 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
+        log.warn("Method argument not valid, ", ex);
         List<String> errors = new ArrayList<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
@@ -61,6 +62,7 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
                                                                           HttpHeaders headers, HttpStatus status,
                                                                           WebRequest request) {
+        log.warn("Missing servlet request parameter, ", ex);
         String error = ex.getParameterName() + " parameter is missing";
 
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
@@ -69,6 +71,7 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
+        log.warn("Constraint violation, ", ex);
         HttpStatus status = HttpStatus.BAD_REQUEST;
         List<String> errors = new ArrayList<>();
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
@@ -82,6 +85,7 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.warn("Method argument type mismatch, ", ex);
         String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -90,8 +94,9 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(
-            NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
+                                                                   HttpStatus status, WebRequest request) {
+        log.warn("No handler found, ", ex);
         String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
 
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
@@ -103,6 +108,7 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                          HttpHeaders headers,
                                                                          HttpStatus status,
                                                                          WebRequest request) {
+        log.warn("Request method not supported, ", ex);
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getMethod());
         builder.append(" method is not supported for this request. Supported methods are ");
@@ -115,7 +121,8 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ResponseEntity<Object> entityNotFoundException(EntityNotFoundException ex) {
+    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.warn("Entity not found, ", ex);
         String error = "Resource not found";
         HttpStatus status = HttpStatus.NOT_FOUND;
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getMessage(), error);
@@ -124,7 +131,8 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DuplicateEntityException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
-    public ResponseEntity<Object> duplicateEntityException(DuplicateEntityException ex) {
+    public ResponseEntity<Object> handleDuplicateEntityException(DuplicateEntityException ex) {
+        log.warn("Duplicate entity, ", ex);
         String error = "Duplicate entry " + ex.getField();
         HttpStatus status = HttpStatus.CONFLICT;
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
@@ -134,6 +142,7 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        log.warn("Authentication exception, ", ex);
         String error = ex.getLocalizedMessage();
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
@@ -142,7 +151,8 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity<Object> handleAuthenticationException(AccessDeniedException ex) {
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        log.warn("Access denied, ", ex);
         String error = ex.getLocalizedMessage();
         HttpStatus status = HttpStatus.FORBIDDEN;
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
@@ -151,7 +161,8 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
+    public ResponseEntity<Object> handleAll(Exception ex) {
+        log.warn("Unhandled exception, ", ex);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         String error = "Error occurred";
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);

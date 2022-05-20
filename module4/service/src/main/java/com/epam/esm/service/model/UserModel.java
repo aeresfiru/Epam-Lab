@@ -25,6 +25,11 @@ public class UserModel extends RepresentationModel<UserModel> {
     @NotNull(groups = OnPersist.class)
     @Length(min = 3, max = 95, groups = OnPersist.class)
     @Length(min = 3)
+    private String username;
+
+    @NotNull(groups = OnPersist.class)
+    @Length(min = 3, max = 95, groups = OnPersist.class)
+    @Length(min = 3)
     private String firstName;
 
     @NotNull(groups = OnPersist.class)

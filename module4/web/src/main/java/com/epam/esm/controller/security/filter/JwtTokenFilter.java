@@ -1,4 +1,4 @@
-package com.epam.esm.controller.security.jwt.filter;
+package com.epam.esm.controller.security.filter;
 
 import com.epam.esm.controller.security.JwtAuthenticationException;
 import com.epam.esm.controller.security.jwt.JwtTokenProvider;

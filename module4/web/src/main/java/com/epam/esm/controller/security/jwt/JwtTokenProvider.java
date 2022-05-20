@@ -3,6 +3,7 @@ package com.epam.esm.controller.security.jwt;
 import com.epam.esm.controller.security.JwtAuthenticationException;
 import com.epam.esm.domain.Role;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -25,9 +26,10 @@ import java.util.*;
  */
 @Component
 @PropertySource("classpath:jwt.properties")
+@Slf4j
 public class JwtTokenProvider {
 
-    private static final String TOKEN_PREFIX = "Bearer_";
+    private static final String TOKEN_PREFIX = "Bearer ";
 
     @Value("${jwt.token.secret}")
     private String secret;
@@ -48,6 +50,7 @@ public class JwtTokenProvider {
     }
 
     public String createToken(String username, Set<Role> roles) {
+        log.info("IN createToken - user: '{}', roles: {}", username, roles);
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", getRoleNames(roles));
@@ -64,17 +67,20 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
+        log.info("IN getAuthentication - token {}", token);
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     public String getUsername(String token) {
+        log.info("IN getUsername - token {}", token);
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
+            log.info("IN resolveToken - token {}", bearerToken);
             return bearerToken.replace(TOKEN_PREFIX, "");
         }
         return null;
@@ -82,6 +88,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
+            log.info("IN validateToken - token {}", token);
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {

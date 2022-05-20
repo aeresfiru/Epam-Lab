@@ -1,24 +1,19 @@
-package com.epam.esm.controller.security.jwt.filter;
+package com.epam.esm.controller.security.filter;
 
-import com.epam.esm.controller.rest.handler.ApiError;
 import com.epam.esm.controller.security.JwtAuthenticationException;
 import com.epam.esm.controller.security.jwt.JwtTokenProvider;
+import com.epam.esm.domain.Order;
 import com.epam.esm.domain.User;
+import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
 
 /**
  * JwtOrderAccessFilter
@@ -30,7 +25,7 @@ import java.util.Date;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class JwtOrderAccessFilter extends OncePerRequestFilter {
+public class JwtOrderAccessFilter implements Filter {
 
     private static final String USERS = "/users/";
 
@@ -40,13 +35,18 @@ public class JwtOrderAccessFilter extends OncePerRequestFilter {
 
     private final UserService userService;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain chain)
-            throws ServletException, IOException {
+    private final OrderService orderService;
 
-        log.info("IN doFilterInternal");
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        log.info("IN doFilter");
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse resp = (HttpServletResponse) response;
+
         String uri = req.getRequestURI();
-        if (uri.contains(USERS) && uri.contains(ORDERS)) {
+        if (uri.contains(ORDERS)) {
             log.info("In JwtOrderAccessFilter - user trying to access order, uri: {}", uri);
 
             User user = getUserFromRequest(req);
@@ -59,22 +59,36 @@ public class JwtOrderAccessFilter extends OncePerRequestFilter {
         chain.doFilter(req, resp);
     }
 
-    private boolean isUserHaveAccessToOrder(User user, String uri) {
-        boolean isUserOrder = user.getId().equals(getUserIdFromUri(uri));
-        boolean isAdmin = user.getRoles().stream()
-                .anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
-
-        return isUserOrder || isAdmin;
-    }
-
     private User getUserFromRequest(HttpServletRequest req) {
         String token = jwtTokenProvider.resolveToken(req);
         String username = jwtTokenProvider.getUsername(token);
         return userService.findByUsername(username);
     }
 
+    private boolean isUserHaveAccessToOrder(User user, String uri) {
+        boolean isUserOrder = isUserOrder(user, uri);
+        boolean isAdmin = user.getRoles().stream()
+                .anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
+
+        return isUserOrder || isAdmin;
+    }
+
+    private boolean isUserOrder(User user, String uri) {
+        if (uri.contains(USERS)) {
+            return user.getId().equals(getUserIdFromUri(uri));
+        }
+        Order order = orderService.findById(getOrderIdFromUri(uri));
+        return order.getUser().getId().equals(user.getId());
+    }
+
     private Long getUserIdFromUri(String uri) {
         String part = uri.replace(USERS, "");
-        return Long.parseLong(part.substring(0, part.indexOf('/')));
+        String id = part.substring(0, part.indexOf('/'));
+        return Long.valueOf(id);
+    }
+
+    private Long getOrderIdFromUri(String uri) {
+        String id = uri.replace(ORDERS, "");
+        return Long.valueOf(id);
     }
 }

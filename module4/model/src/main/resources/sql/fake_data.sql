@@ -1,13 +1,14 @@
+use `gifts-security`;
 delete
 from gift_certificate_tag
 where true;
 
 delete
-from gift_certificate
+from certificates
 where true;
 
 delete
-from tag
+from tags
 where true;
 
 delete
@@ -15,11 +16,11 @@ from user_order_gift_certificate
 where true;
 
 delete
-from user_order
+from orders
 where true;
 
 delete
-from account
+from users
 where true;
 
 drop procedure if exists insert_tags;
@@ -35,7 +36,7 @@ BEGIN
     DECLARE i INT DEFAULT 1;
     WHILE i <= 1000
         DO
-            INSERT INTO tag(id, name)
+            INSERT INTO tags(id, name)
                 VALUE (i, CONCAT('Tag_', i));
             SET i = i + 1;
         END WHILE;
@@ -47,7 +48,7 @@ BEGIN
     DECLARE i INT DEFAULT 1;
     WHILE i <= 10000
         DO
-            INSERT INTO gift_certificate(id, name, description, price, duration)
+            INSERT INTO certificates(id, name, description, price, duration)
                 VALUE (i, CONCAT('Certificate', i), CONCAT('This is ', i, ' certificate description'),
                        ROUND(RAND() * 99.99 + 0.01, 2), FLOOR(RAND() * (366 + 4)));
             SET i = i + 1;
@@ -80,8 +81,9 @@ BEGIN
     DECLARE i INT DEFAULT 1;
     WHILE i <= 1000
         DO
-            INSERT INTO account(id, login, password)
-                VALUE (i, CONCAT('Login_', i), TO_BASE64(CONCAT('Psw123_', i)));
+            INSERT INTO users(id, email, first_name, last_name, password, status, username)
+                VALUE (i, CONCAT('Email_', i), CONCAT('First_name_', i), CONCAT('Last_name_', i),
+                       TO_BASE64('Psw123_'), 'ACTIVE', CONCAT('username_', i));
             SET i = i + 1;
         END WHILE;
 END;
@@ -94,7 +96,7 @@ BEGIN
     WHILE i <= 755
         DO
             SET user_id = ROUND(RAND() * (1000 - 21) + 22);
-            INSERT IGNORE INTO user_order(id, user_id, cost)
+            INSERT IGNORE INTO orders(id, user_id, cost)
                 VALUE (i, user_id, ROUND(RAND() * 299.99 + 0.01, 2));
             SET i = i + 1;
         END WHILE;

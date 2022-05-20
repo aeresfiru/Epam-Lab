@@ -1,13 +1,10 @@
-package com.epam.esm.controller.security.config;
+package com.epam.esm.controller.config;
 
 import com.epam.esm.controller.rest.handler.RestAccessDeniedHandler;
 import com.epam.esm.controller.rest.handler.RestAuthenticationEntryPoint;
-import com.epam.esm.controller.security.jwt.JwtConfigurer;
-import com.epam.esm.controller.security.jwt.filter.JwtOrderAccessFilter;
-import com.epam.esm.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.epam.esm.controller.security.filter.FilterChainExceptionHandler;
+import com.epam.esm.controller.security.filter.JwtTokenFilter;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +15,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import com.epam.esm.controller.security.jwt.JwtTokenProvider;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /**
  * WebSecurityConfig
@@ -39,9 +36,9 @@ import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 @AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final FilterChainExceptionHandler filterChainExceptionHandler;
 
-    private final UserService userService;
+    private final JwtTokenFilter jwtTokenFilter;
 
     private final RestAccessDeniedHandler accessDeniedHandler;
 
@@ -65,9 +62,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/orders").fullyAuthenticated()
                 .antMatchers(HttpMethod.GET, "/tags/**", "/users/**").fullyAuthenticated()
                 .anyRequest().hasRole("ADMIN")
+                .and().exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint)
-                .and()
-                .apply(new JwtConfigurer(jwtTokenProvider, userService));
+                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
