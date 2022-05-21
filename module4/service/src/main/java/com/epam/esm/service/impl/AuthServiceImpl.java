@@ -10,7 +10,6 @@ import com.epam.esm.service.DuplicateEntityException;
 import com.epam.esm.service.model.AuthenticationModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Example;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,16 +46,13 @@ public class AuthServiceImpl implements AuthService {
                 username,
                 authenticationModel.getPassword())
         );
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User with username:" + username + ", not found");
-        }
-        return user;
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username:" + username + ", not found"));
     }
 
     @Override
     public void signup(User user) {
-        if (userRepository.exists(Example.of(user))) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new DuplicateEntityException(user.getUsername(), "User already exists");
         }
         setUserFields(user);

@@ -78,7 +78,6 @@ public class CertificateServiceImpl implements CertificateService {
         log.info("IN update - updating certificate, id: ({})", id);
         Certificate toUpdate = certificateRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-
         this.checkForDuplicate(certificate.getName());
         updateCertificateFields(toUpdate, certificate);
         return certificateRepository.save(toUpdate);

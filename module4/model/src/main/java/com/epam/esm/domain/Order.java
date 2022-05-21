@@ -1,9 +1,6 @@
 package com.epam.esm.domain;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -26,7 +23,8 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     @Id
@@ -51,10 +49,6 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "gift_certificate_id"))
     @ToString.Exclude
     private Set<Certificate> certificates = new HashSet<>();
-
-    public Order(long id) {
-        this.id = id;
-    }
 
     @Override
     public boolean equals(Object o) {

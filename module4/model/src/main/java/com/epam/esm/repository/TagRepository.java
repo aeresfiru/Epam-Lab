@@ -19,8 +19,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     Optional<Tag> findByName(String name);
 
-    @Query(nativeQuery = true,
-            value = "SELECT tags.id, tags.name\n" +
+    @Query(value =
+            "SELECT tags.id, tags.name\n" +
                     "FROM tags\n" +
                     "         JOIN gift_certificate_tag gct on tags.id = gct.tag_id\n" +
                     "         JOIN user_order_gift_certificate uogc on gct.gift_certificate_id = uogc.gift_certificate_id\n" +
@@ -33,8 +33,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
                     "                      LIMIT 1)\n" +
                     "GROUP BY tags.id, tags.name\n" +
                     "ORDER BY COUNT(tags.id) DESC\n" +
-                    "LIMIT 1;")
+                    "LIMIT 1", nativeQuery = true)
     Tag findMostUsedTagOfUserWithHighestCostOfAllOrders();
-
-    boolean existsByName(String name);
 }

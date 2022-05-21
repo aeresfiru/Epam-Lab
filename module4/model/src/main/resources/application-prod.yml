@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/gifts-security
+    url: jdbc:mysql://localhost:3306/gifts-module4
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,3 +10,9 @@ spring:
     hibernate:
       ddl-auto: create
     defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always

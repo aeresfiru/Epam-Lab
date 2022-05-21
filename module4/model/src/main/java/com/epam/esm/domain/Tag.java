@@ -1,9 +1,6 @@
 package com.epam.esm.domain;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -23,7 +20,8 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tag {
 
     @Id
@@ -36,10 +34,6 @@ public class Tag {
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<Certificate> certificates = new HashSet<>();
-
-    public Tag(final Long id) {
-        this.id = id;
-    }
 
     @PreRemove
     private void beforeRemove() {

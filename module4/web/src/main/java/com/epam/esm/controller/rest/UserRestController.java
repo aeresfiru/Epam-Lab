@@ -36,7 +36,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
-@PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
+
 public class UserRestController {
 
     private final OrderService orderService;
@@ -45,6 +45,7 @@ public class UserRestController {
 
     private final ModelMapper mapper;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public CollectionModel<UserModel> findAllUsers(@RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "5") int size,
@@ -58,6 +59,7 @@ public class UserRestController {
         return CollectionModel.of(users, link);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserModel> findById(@PathVariable @Positive Long id) {
         UserModel user = mapper.map(userService.findById(id), UserModel.class);
@@ -65,6 +67,7 @@ public class UserRestController {
         return ResponseEntity.ok(user);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
     @GetMapping("/{userId}/orders")
     public CollectionModel<OrderModel> findUserOrders(@PathVariable Long userId,
                                                       @RequestParam(defaultValue = "0") int page,
@@ -79,11 +82,14 @@ public class UserRestController {
         return CollectionModel.of(orders, link);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
     @PostMapping("/{userId}/orders")
     public ResponseEntity<OrderModel> makeOrder(@RequestBody @Valid OrderCreateModel orderCreateModel,
                                                 @PathVariable @Positive Long userId) {
         Order order = mapper.map(orderCreateModel, Order.class);
-        order.setUser(new User(userId));
+        User user = new User();
+        user.setId(userId);
+        order.setUser(user);
         OrderModel dto = mapper.map(orderService.create(order), OrderModel.class);
         this.addSelfRelLink(dto);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);

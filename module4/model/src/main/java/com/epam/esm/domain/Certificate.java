@@ -1,9 +1,6 @@
 package com.epam.esm.domain;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.*;
 
@@ -26,13 +23,14 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "certificates")
-@DynamicInsert
-@DynamicUpdate
-@SelectBeforeUpdate
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@DynamicInsert
+@DynamicUpdate
+@SelectBeforeUpdate
 public class Certificate {
 
     @Id
@@ -42,13 +40,13 @@ public class Certificate {
     @Column(name = "name", unique = true)
     private String name;
 
-    @Column(name = "description",nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "price",nullable = false)
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @Column(name = "duration",nullable = false)
+    @Column(name = "duration", nullable = false)
     private Short duration;
 
     @CreationTimestamp
@@ -74,10 +72,6 @@ public class Certificate {
     @ManyToMany(mappedBy = "certificates")
     @ToString.Exclude
     private Set<Order> orders = new HashSet<>();
-
-    public Certificate(Long id) {
-        this.id = id;
-    }
 
     @Override
     public boolean equals(Object o) {

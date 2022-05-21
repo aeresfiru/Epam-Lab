@@ -27,10 +27,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
-
-    private final PasswordEncoder encoder;
-
     @Override
     public User findById(Long id) {
         log.info("IN findById - userId: {}", id);
@@ -46,6 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         log.info("IN findByUsername - username: {}", username);
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User with username: " + username + " not found"));
     }
 }

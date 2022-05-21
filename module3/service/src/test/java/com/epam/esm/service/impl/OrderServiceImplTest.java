@@ -4,8 +4,10 @@ import com.epam.esm.CertificatesApplication;
 import com.epam.esm.domain.Order;
 import com.epam.esm.dto.Mapper;
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.Pagination;
+import com.epam.esm.repository.UserRepository;
 import com.epam.esm.repository.impl.UserRepositoryImpl;
 import com.epam.esm.service.IncorrectParameterException;
 import com.epam.esm.service.OrderService;
@@ -18,10 +20,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.ui.ModelMap;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,9 +52,16 @@ class OrderServiceImplTest {
     @Autowired
     private Validator<Pagination> paginationValidator;
 
+    private CertificateRepository certificateRepository;
+
+    private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     @BeforeEach
     void setup() {
-        orderService = new OrderServiceImpl(orderRepository, mapper, paginationValidator);
+        orderService = new OrderServiceImpl(orderRepository, certificateRepository, userRepository, mapper, modelMapper, paginationValidator);
     }
 
     @ParameterizedTest

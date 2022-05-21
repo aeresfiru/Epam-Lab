@@ -18,15 +18,12 @@ values (1, 1),
        (3, 2),
        (3, 3);
 
-insert into `users`(first_name, last_name, username, email, password, create_date, last_update_date, status)
-values ('Ivan', 'Ivanov', 'login 1', 'ivan@gmail.com', '$2a$04$diF.vjclauU/GLySt3uom.8Odla8qsuPprnZrCyy85D18XAe9wwyq',
-        current_timestamp, current_timestamp, 'ACTIVE'),
-       ('Petr', 'Petrov', 'login 2', 'petr@gmail.com', '$2a$04$diF.vjclauU/GLySt3uom.8Odla8qsuPprnZrCyy85D18XAe9wwyq',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE'),
-       ('Pavel', 'Pavlov', 'login 3', 'pavel@gmail.com', '$2a$04$diF.vjclauU/GLySt3uom.8Odla8qsuPprnZrCyy85D18XAe9wwyq',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ACTIVE');
+insert into `users`(first_name, last_name, username, password, status)
+values ('Ivan', 'Ivanov', 'login 1', '$2a$04$diF.vjclauU/GLySt3uom.8Odla8qsuPprnZrCyy85D18XAe9wwyq', 'ACTIVE'),
+       ('Petr', 'Petrov', 'login 2', '$2a$04$diF.vjclauU/GLySt3uom.8Odla8qsuPprnZrCyy85D18XAe9wwyq', 'ACTIVE'),
+       ('Pavel', 'Pavlov', 'login 3', '$2a$04$diF.vjclauU/GLySt3uom.8Odla8qsuPprnZrCyy85D18XAe9wwyq', 'ACTIVE');
 
-insert into `user_roles`(user_id, role_id)
+insert into `users_roles`(user_id, roles_id)
 values (1, 1),
        (2, 1),
        (3, 2);

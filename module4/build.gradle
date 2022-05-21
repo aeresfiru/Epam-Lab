@@ -42,17 +42,15 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-security'
         compileOnly 'org.projectlombok:lombok'
         developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
         // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
         implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
         runtimeOnly group: 'com.h2database', name: 'h2', version: '2.1.212'
         runtimeOnly 'mysql:mysql-connector-java'
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-
+        // https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils
+        implementation 'commons-beanutils:commons-beanutils:1.9.3'
         implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
     }
 

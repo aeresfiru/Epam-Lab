@@ -6,6 +6,7 @@ import com.epam.esm.service.AuthService;
 import com.epam.esm.service.model.AuthenticationModel;
 import com.epam.esm.service.model.JwtAuthResponse;
 import com.epam.esm.service.model.UserModel;
+import com.epam.esm.service.model.UserRegistrationModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 /**
  * RegistrationController
@@ -40,7 +43,7 @@ public class AuthRestController {
     }
 
     @PostMapping("/signup")
-    public void signup(@RequestBody UserModel userModel) {
+    public void signup(@RequestBody @Valid UserRegistrationModel userModel) {
         User user = modelMapper.map(userModel, User.class);
         authService.signup(user);
     }
