@@ -5,7 +5,6 @@ import com.epam.esm.domain.User;
 import com.epam.esm.service.AuthService;
 import com.epam.esm.service.model.AuthenticationModel;
 import com.epam.esm.service.model.JwtAuthResponse;
-import com.epam.esm.service.model.UserModel;
 import com.epam.esm.service.model.UserRegistrationModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -8,6 +8,7 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -29,7 +30,7 @@ public class JwtOrderAccessFilter implements Filter {
 
     private static final String USERS = "/users/";
 
-    private static final String ORDERS = "/orders/";
+    private static final String ORDERS = "/orders";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -46,7 +47,7 @@ public class JwtOrderAccessFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
 
         String uri = req.getRequestURI();
-        if (uri.contains(ORDERS)) {
+        if (uri.contains(ORDERS) && req.getMethod().equals(HttpMethod.GET.name())) {
             log.info("In JwtOrderAccessFilter - user trying to access order, uri: {}", uri);
 
             User user = getUserFromRequest(req);
@@ -75,20 +76,22 @@ public class JwtOrderAccessFilter implements Filter {
 
     private boolean isUserOrder(User user, String uri) {
         if (uri.contains(USERS)) {
-            return user.getId().equals(getUserIdFromUri(uri));
+            return user.getId().equals(parseUserIdFromUri(uri));
         }
-        Order order = orderService.findById(getOrderIdFromUri(uri));
+        Order order = orderService.findById(parseOrderIdFromUri(uri));
         return order.getUser().getId().equals(user.getId());
     }
 
-    private Long getUserIdFromUri(String uri) {
-        String part = uri.replace(USERS, "");
+    private Long parseUserIdFromUri(String uri) {
+        String part = uri.replace(USERS, ""); //part: 1/orders
         String id = part.substring(0, part.indexOf('/'));
+        log.warn("part: {}, id: {}", part, id);
         return Long.valueOf(id);
     }
 
-    private Long getOrderIdFromUri(String uri) {
-        String id = uri.replace(ORDERS, "");
+    private Long parseOrderIdFromUri(String uri) {
+        String part = uri.replace(ORDERS, ""); // part: /1
+        String id = part.substring(part.indexOf('/') + 1);
         return Long.valueOf(id);
     }
 }

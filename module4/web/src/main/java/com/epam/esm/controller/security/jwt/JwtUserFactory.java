@@ -1,7 +1,6 @@
 package com.epam.esm.controller.security.jwt;
 
 import com.epam.esm.domain.Role;
-import com.epam.esm.domain.Status;
 import com.epam.esm.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

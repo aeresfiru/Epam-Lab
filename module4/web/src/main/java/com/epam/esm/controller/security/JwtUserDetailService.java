@@ -1,9 +1,9 @@
 package com.epam.esm.controller.security;
 
-import com.epam.esm.domain.User;
-import com.epam.esm.service.UserService;
 import com.epam.esm.controller.security.jwt.JwtUser;
 import com.epam.esm.controller.security.jwt.JwtUserFactory;
+import com.epam.esm.domain.User;
+import com.epam.esm.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

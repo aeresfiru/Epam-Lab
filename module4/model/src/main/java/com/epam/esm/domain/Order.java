@@ -6,7 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -41,7 +41,7 @@ public class Order {
 
     @CreationTimestamp
     @Column(name = "create_date", updatable = false)
-    private Date createDate;
+    private LocalDateTime createDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_order_gift_certificate",

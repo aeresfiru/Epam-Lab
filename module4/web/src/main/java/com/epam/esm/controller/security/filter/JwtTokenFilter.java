@@ -1,6 +1,5 @@
 package com.epam.esm.controller.security.filter;
 
-import com.epam.esm.controller.security.JwtAuthenticationException;
 import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

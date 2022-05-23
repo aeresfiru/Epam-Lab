@@ -1,11 +1,8 @@
 package com.epam.esm.controller.rest;
 
 import com.epam.esm.controller.util.SortTypeMapConverter;
-import com.epam.esm.domain.Order;
-import com.epam.esm.domain.User;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.model.OrderCreateModel;
 import com.epam.esm.service.model.OrderModel;
 import com.epam.esm.service.model.UserModel;
 import lombok.AllArgsConstructor;
@@ -15,12 +12,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -80,19 +75,6 @@ public class UserRestController {
         Link link = linkTo(methodOn(this.getClass())
                 .findUserOrders(userId, page, size, sort)).withSelfRel();
         return CollectionModel.of(orders, link);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
-    @PostMapping("/{userId}/orders")
-    public ResponseEntity<OrderModel> makeOrder(@RequestBody @Valid OrderCreateModel orderCreateModel,
-                                                @PathVariable @Positive Long userId) {
-        Order order = mapper.map(orderCreateModel, Order.class);
-        User user = new User();
-        user.setId(userId);
-        order.setUser(user);
-        OrderModel dto = mapper.map(orderService.create(order), OrderModel.class);
-        this.addSelfRelLink(dto);
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
     private void addSelfRelLink(UserModel user) {

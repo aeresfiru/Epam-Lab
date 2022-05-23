@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
@@ -58,10 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/certificates/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/signup", "/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/orders").fullyAuthenticated()
-                .antMatchers(HttpMethod.GET, "/tags/**", "/users/**").fullyAuthenticated()
-                .anyRequest().hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
+                .anyRequest().fullyAuthenticated()
                 .and().exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint)

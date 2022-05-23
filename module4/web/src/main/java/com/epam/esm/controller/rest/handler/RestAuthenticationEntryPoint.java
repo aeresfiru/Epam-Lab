@@ -24,7 +24,7 @@ import java.util.Date;
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private static final String ERROR = "Access denied";
+    private static final String ERROR = "Access is denied";
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -40,6 +40,10 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         PrintWriter out = resp.getWriter();
 
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getMessage(), ERROR);
+
+        resp.setStatus(status.value());
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
         out.write(objectMapper.writeValueAsString(apiError));
     }
 }

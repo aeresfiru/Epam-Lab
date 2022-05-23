@@ -44,6 +44,10 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         String error = getErrorMessage(req);
 
         ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getMessage(), error);
+
+        resp.setStatus(status.value());
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
         out.write(objectMapper.writeValueAsString(apiError));
     }
 
