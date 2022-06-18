@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -42,13 +43,12 @@ public class JwtOrderAccessFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        log.info("IN doFilter");
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
         String uri = req.getRequestURI();
         if (uri.contains(ORDERS) && req.getMethod().equals(HttpMethod.GET.name())) {
-            log.info("In JwtOrderAccessFilter - user trying to access order, uri: {}", uri);
+            log.info("User trying to access order, uri: {}", uri);
 
             User user = getUserFromRequest(req);
             boolean haveAccessToOrder = isUserHaveAccessToOrder(user, uri);
@@ -85,7 +85,6 @@ public class JwtOrderAccessFilter implements Filter {
     private Long parseUserIdFromUri(String uri) {
         String part = uri.replace(USERS, ""); //part: 1/orders
         String id = part.substring(0, part.indexOf('/'));
-        log.warn("part: {}, id: {}", part, id);
         return Long.valueOf(id);
     }
 

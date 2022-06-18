@@ -50,7 +50,7 @@ public class JwtTokenProvider {
     }
 
     public String createToken(String username, Set<Role> roles) {
-        log.info("IN createToken - user: '{}', roles: {}", username, roles);
+        log.info("Creating token, user: '{}', roles: {}", username, roles);
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", getRoleNames(roles));
@@ -67,20 +67,20 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        log.info("IN getAuthentication - token {}", token);
+        log.info("Getting authentication - token {}", token);
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     public String getUsername(String token) {
-        log.info("IN getUsername - token {}", token);
+        log.info("Getting user - token {}", token);
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
-            log.info("IN resolveToken - token {}", bearerToken);
+            log.info("Resolving token - token {}", bearerToken);
             return bearerToken.replace(TOKEN_PREFIX, "");
         }
         return null;
@@ -88,7 +88,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            log.info("IN validateToken - token {}", token);
+            log.info("Validating token - token {}", token);
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {

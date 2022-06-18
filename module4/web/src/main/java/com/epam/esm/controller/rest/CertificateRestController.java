@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
@@ -19,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -42,24 +44,41 @@ public class CertificateRestController {
                                                      @RequestParam(required = false, value = "tag") List<String> tagNames,
                                                      @RequestParam(defaultValue = "0") int page,
                                                      @RequestParam(defaultValue = "5") int size,
-                                                     @RequestParam(defaultValue = "-id") String sort) {
+                                                     @RequestParam(defaultValue = "-id") String sort,
+                                                     HttpServletRequest req) {
 
         Pageable pagingSort = PageRequest.of(page, size, SortTypeMapConverter.convert(sort));
-        Page<CertificateModel> certificates = service.findAll(query, tagNames, pagingSort)
-                .map(this::mapToCertificateModel);
+
+        Page<CertificateModel> certificates;
+        if (!req.isUserInRole("ROLE_ADMIN")) {
+            certificates = service.findAllActiveCertificates(query, tagNames, pagingSort)
+                    .map(this::mapToCertificateModel);
+        } else {
+            certificates = service.findAll(query, tagNames, pagingSort)
+                    .map(this::mapToCertificateModel);
+        }
 
         certificates.forEach(this::addSelfRelLink);
         Link link = linkTo(methodOn(this.getClass())
-                .findAll(query, tagNames, page, size, sort)).withSelfRel().expand();
+                .findAll(query, tagNames, page, size, sort, req)).withSelfRel().expand();
         return CollectionModel.of(certificates, link);
     }
 
     @GetMapping("/{id}")
     @PermitAll
-    public ResponseEntity<CertificateModel> findById(@PathVariable @Positive Long id) {
-        CertificateModel certificate = mapToCertificateModel(service.findById(id));
-        addSelfRelLink(certificate);
-        return ResponseEntity.ok(certificate);
+    public ResponseEntity<CertificateModel> findById(@PathVariable @Positive Long id,
+                                                     HttpServletRequest req) {
+
+        Certificate certificate;
+        if (!req.isUserInRole("ROLE_ADMIN")) {
+            certificate = service.findActiveCertificateById(id);
+        } else {
+            certificate = service.findById(id);
+        }
+
+        CertificateModel certificateModel = mapToCertificateModel(certificate);
+        addSelfRelLink(certificateModel);
+        return ResponseEntity.ok(certificateModel);
     }
 
     @PostMapping

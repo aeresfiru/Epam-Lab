@@ -26,4 +26,6 @@ public interface CertificateService {
     Certificate update(Certificate certificate, Long id);
 
     void delete(Long id);
+
+    Certificate findActiveCertificateById(Long id);
 }

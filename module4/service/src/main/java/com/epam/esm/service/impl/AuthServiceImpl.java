@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User login(AuthenticationModel authenticationModel) throws UsernameNotFoundException {
-        log.info("IN login - login user with username {}", authenticationModel.getUsername());
+        log.info("Login user with username {}", authenticationModel.getUsername());
         String username = authenticationModel.getUsername();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 username,
@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
         }
         setUserFields(user);
         userRepository.save(user);
-        log.info("IN signup - user with username: {} created successfully", user.getUsername());
+        log.info("User with username: {} created successfully", user.getUsername());
     }
 
     private void setUserFields(User user) {

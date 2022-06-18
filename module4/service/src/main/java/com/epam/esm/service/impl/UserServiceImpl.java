@@ -27,19 +27,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
-        log.info("IN findById - userId: {}", id);
+        log.info("Searching for user - userId: {}", id);
         return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Page<User> findAll(Pageable pageable) {
-        log.info("IN findAll - pageable: {}", pageable);
+        log.info("Searching for all users - pageable: {}", pageable);
         return userRepository.findAll(pageable);
     }
 
     @Override
     public User findByUsername(String username) {
-        log.info("IN findByUsername - username: {}", username);
+        log.info("Searching for user by username: {}", username);
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User with username: " + username + " not found"));
     }

@@ -35,20 +35,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findById(Long orderId) {
-        log.info("IN findById - orderId: {}", orderId);
+        log.info("Searching by id: {}", orderId);
         return orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Page<Order> findUserOrders(Long userId, Pageable pageable) {
-        log.info("IN findUserOrders - userId: {}, pageable: {}", userId, pageable);
+        log.info("Searching for user orders - userId: {}, pageable: {}", userId, pageable);
         return orderRepository.findAllByUserId(userId, pageable);
     }
 
     @Override
     @Transactional
     public Order create(Order order) {
-        log.info("IN create - order: {}", order);
+        log.info("Creating order - order: {}", order);
         calculateCost(order);
         return orderRepository.save(order);
     }
@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void deleteById(Long orderId) {
-        log.info("IN deleteById - orderId={}", orderId);
+        log.info("Deleting order - orderId: {}", orderId);
         if (!orderRepository.existsById(orderId)) {
             throw new EntityNotFoundException();
         }

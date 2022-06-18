@@ -57,7 +57,7 @@ public class CertificateSpecification {
             if (status == null) {
                 return cb.conjunction();
             }
-            return cb.equal(root.get("status"), status.toString());
+            return cb.equal(root.get("status"), status);
         };
     }
 }

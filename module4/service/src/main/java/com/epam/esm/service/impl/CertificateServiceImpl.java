@@ -40,13 +40,21 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public Certificate findById(Long id) {
-        log.info("IN findById, id: {}", id);
-        return certificateRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        log.info("Searching certificate by id: {}", id);
+        return certificateRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public Certificate findActiveCertificateById(Long id) {
+        log.info("Searching active certificate by id: {}", id);
+        return certificateRepository.findByIdAndStatus(id, Status.ACTIVE)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Page<Certificate> findAll(String query, List<String> tagNames, Pageable pageable) {
-        log.info("IN findAll - query: {}, tagNames: {}, pageable: {}", query, tagNames, pageable);
+        log.info("Searching for all certificates - query: {}, tagNames: {}, pageable: {}", query, tagNames, pageable);
         return certificateRepository.findAll(where(certificateNameLike(query)
                 .or(certificateDescriptionLike(query)))
                 .and(certificateHasTags(tagNames)), pageable);
@@ -54,7 +62,8 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public Page<Certificate> findAllActiveCertificates(String query, List<String> tagNames, Pageable pageable) {
-        log.info("IN findAll - query: {}, tagNames: {}, pageable: {}", query, tagNames, pageable);
+        log.info("Searching for all active certificates - query: {}, tagNames: {}, pageable: {}",
+                query, tagNames, pageable);
         return certificateRepository.findAll((where(certificateNameLike(query)
                 .or(certificateDescriptionLike(query)))
                 .and(certificateStatusIs(Status.ACTIVE)))
@@ -64,7 +73,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional
     public void create(Certificate certificate) {
-        log.info("IN create - creating certificate: {}", certificate);
+        log.info("Creating certificate - creating certificate: {}", certificate);
         checkForDuplicate(certificate.getName());
         Set<Tag> tags = new HashSet<>(certificate.getTags());
         certificate.getTags().clear();
@@ -78,7 +87,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional
     public Certificate update(Certificate certificate, Long id) {
-        log.info("IN update - updating certificate, id: ({})", id);
+        log.info("Updating certificate, id: ({})", id);
         Certificate toUpdate = certificateRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
         this.checkForDuplicate(certificate.getName());
@@ -89,7 +98,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional
     public void delete(Long id) {
-        log.info("IN delete - deleting certificate: {}", id);
+        log.info("Deleting certificate: {}", id);
         Certificate certificate = certificateRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 

@@ -31,7 +31,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
-
 public class UserRestController {
 
     private final OrderService orderService;

@@ -32,11 +32,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain chain)
             throws ServletException, IOException {
 
-        log.info("IN doFilterInternal");
         String token = jwtTokenProvider.resolveToken(req);
 
         if (token == null || !jwtTokenProvider.validateToken(token)) {
-            log.info("IN doFilterInternal - token is null or invalid");
+            log.warn("Token is null or invalid");
             chain.doFilter(req, resp);
             return;
         }

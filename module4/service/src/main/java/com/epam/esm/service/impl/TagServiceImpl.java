@@ -30,26 +30,26 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag findById(Long id) {
-        log.info("IN findTagById - id : {}", id);
+        log.info("Searching for tag by id: {}", id);
         return tagRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Page<Tag> findAll(Pageable pageable) {
-        log.info("IN findAllTags - pageable: {}", pageable);
+        log.info("Searching for all tags - pageable: {}", pageable);
         return tagRepository.findAll(pageable);
     }
 
     @Override
     public Tag findPopularTagOfRichestUser() {
-        log.info("IN findMostUsedTagOfUserWithHighestCostOfAllOrders");
+        log.info("Searching for popular tag");
         return tagRepository.findMostUsedTagOfUserWithHighestCostOfAllOrders();
     }
 
     @Override
     @Transactional
     public Tag create(Tag tag) {
-        log.info("IN createTag, tag: {}", tag);
+        log.info("Creating tag: {}", tag);
         this.checkForDuplicate(tag.getName());
         return tagRepository.save(tag);
     }
@@ -57,7 +57,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public void delete(Long id) {
-        log.info("IN delete tag, id: {}", id);
+        log.info("Deleting tag, id: {}", id);
         if (!tagRepository.existsById(id)) {
             throw new EntityNotFoundException();
         }

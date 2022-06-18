@@ -23,5 +23,5 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long>,
 
     Optional<Certificate> findByName(String name);
 
-    Page<Certificate> findAllByStatus(Status status, Pageable pageable);
+    Optional<Certificate> findByIdAndStatus(Long id, Status status);
 }
