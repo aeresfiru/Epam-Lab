@@ -1,4 +1,4 @@
-package com.epam.esm.controller.config;
+package com.epam.esm.controller.security;
 
 import com.epam.esm.controller.rest.handler.RestAccessDeniedHandler;
 import com.epam.esm.controller.rest.handler.RestAuthenticationEntryPoint;
@@ -54,12 +54,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .httpBasic().disable()
                 .csrf().disable()
+                .cors()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/certificates/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/login", "/signup").permitAll()
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/v1/certificates/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/login", "/api/v1/signup").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/refresh-token").permitAll()
                 .anyRequest().fullyAuthenticated()
-                .and().exceptionHandling()
+                .and()
+                .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .and()

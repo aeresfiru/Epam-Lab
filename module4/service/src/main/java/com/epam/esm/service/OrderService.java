@@ -18,6 +18,4 @@ public interface OrderService {
     Page<Order> findUserOrders(Long userId, Pageable pageable);
 
     Order create(Order order);
-
-    void deleteById(Long orderId);
 }

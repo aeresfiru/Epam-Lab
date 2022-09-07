@@ -25,6 +25,7 @@ import java.util.Set;
 @Table(name = "certificates")
 @Getter
 @Setter
+@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,11 +51,11 @@ public class Certificate {
     private Short duration;
 
     @CreationTimestamp
-    @Column(name = "create_date", updatable = false)
+    @Column(name = "created", updatable = false)
     private LocalDateTime createDate;
 
     @UpdateTimestamp
-    @Column(name = "last_update_date")
+    @Column(name = "updated")
     private LocalDateTime lastUpdateDate;
 
     @Enumerated(EnumType.STRING)
@@ -62,7 +63,7 @@ public class Certificate {
     private Status status = Status.ACTIVE;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "gift_certificate_tag",
+    @JoinTable(name = "gift_certificate_tags",
             joinColumns = @JoinColumn(name = "gift_certificate_id", referencedColumnName = "id",
                     nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id",

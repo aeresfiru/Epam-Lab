@@ -23,7 +23,7 @@ import javax.validation.Valid;
  * @version 1.0
  * @since 11.05.22
  */
-@RestController
+@RestController("/api/v1")
 @AllArgsConstructor
 @Slf4j
 @PreAuthorize("!hasRole('ROLE_ADMIN') && !hasRole('ROLE_USER')")
@@ -43,6 +43,7 @@ public class AuthRestController {
 
     @PostMapping("/signup")
     public void signup(@RequestBody @Valid UserRegistrationModel userModel) {
+        log.info("IN signup");
         User user = modelMapper.map(userModel, User.class);
         authService.signup(user);
     }

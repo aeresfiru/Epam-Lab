@@ -2,10 +2,6 @@ dependencies {
     implementation project(':model')
 }
 
-bootJar {
-    enabled = false
-}
-
-jar {
-    enabled = true
+war {
+    enabled(false)
 }

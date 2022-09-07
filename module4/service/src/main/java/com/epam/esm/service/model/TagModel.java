@@ -1,11 +1,12 @@
 package com.epam.esm.service.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 /**
@@ -16,10 +17,11 @@ import javax.validation.constraints.Size;
  * @since 21.04.22
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class TagModel extends RepresentationModel<TagModel> {
 
-    @Positive
     private Long id;
 
     @NotNull

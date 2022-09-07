@@ -1,11 +1,12 @@
 package com.epam.esm.service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,10 +19,11 @@ import java.util.List;
  * @since 21.04.22
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class OrderModel extends RepresentationModel<OrderModel> {
 
-    @Positive
     private Long id;
 
     private BigDecimal cost;

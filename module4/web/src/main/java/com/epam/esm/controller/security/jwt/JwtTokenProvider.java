@@ -35,7 +35,10 @@ public class JwtTokenProvider {
     private String secret;
 
     @Value("${jwt.token.expired}")
-    private long validityInMilliseconds;
+    private long accessTokenValidityInMilliseconds;
+
+    @Value("${jwt.token.expired}")
+    private long refreshTokenValidityInMilliseconds;
 
     private final UserDetailsService userDetailsService;
 
@@ -56,7 +59,7 @@ public class JwtTokenProvider {
         claims.put("roles", getRoleNames(roles));
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + accessTokenValidityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)

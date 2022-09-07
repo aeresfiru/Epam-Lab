@@ -32,7 +32,7 @@ public class JwtUserDetailService implements UserDetailsService {
         if (user == null) throw new UsernameNotFoundException("User not found, username: " + username);
 
         JwtUser jwtUser = JwtUserFactory.create(user);
-        log.info("IN loadUserByUsername - user with username {}, successfully loaded", username);
+        log.info("User with username {}, successfully loaded", username);
         return jwtUser;
     }
 }

@@ -1,0 +1,88 @@
+.header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin-inline: 15px;
+	padding: 15px;
+}
+
+.reorder {
+	display: flex;
+	align-items: center;
+	flex-grow: 8;
+}
+
+.reorder-icon {
+	color: #c4c4c4;
+	font-size: 35px;
+}
+
+.reorder-icon:hover {
+	cursor: pointer;
+}
+
+.reorder-logo {
+	margin-left: 10px;
+	font-size: large;
+}
+
+.reorder-logo:hover {
+	cursor: pointer;
+	color: #6fcf97;
+}
+
+.search {
+	display: flex;
+	flex-grow: 8;
+}
+
+.search-form {
+	display: flex;
+}
+
+.search-input, .search-button {
+	display: flex;
+	border: 1px solid #ccc;
+	box-sizing: border-box;
+	padding: 5px;
+	height: 100%;
+}
+
+.search-input {
+	display: flex;
+	height: 40px;
+	padding-left: 15px;
+}
+
+.search-input::placeholder {
+	font-size: 1.2em;
+}
+
+.search-button {
+	border-left: none;
+}
+
+.items {
+	display: flex;
+	justify-content: space-between;
+	flex-grow: 1;
+}
+
+.items-button {
+	border-style: none;
+	background: white;
+	font-size: medium;
+}
+
+.items .favorite:hover, .items .cart:hover, .items .items-button:hover {
+	color: #6fcf97;
+	cursor: pointer;
+}
+
+.vl {
+	display: flex;
+	align-self: center;
+	border-left: 2px solid black;
+	height: 15px;
+}

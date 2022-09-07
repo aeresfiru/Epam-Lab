@@ -30,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/orders")
+@RequestMapping("/api/v1/orders")
 @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')")
 public class OrderRestController {
 
@@ -66,12 +66,6 @@ public class OrderRestController {
         String token = jwtTokenProvider.resolveToken(request);
         String username = jwtTokenProvider.getUsername(token);
         return userService.findByUsername(username);
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable @Positive Long id) {
-        orderService.deleteById(id);
     }
 
     private void addSelfRelLink(OrderModel orderModel) {

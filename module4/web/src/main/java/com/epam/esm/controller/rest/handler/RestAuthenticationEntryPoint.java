@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 
 /**
  * RestAuthenticationEntryPoint
@@ -39,7 +38,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         PrintWriter out = resp.getWriter();
 
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getMessage(), ERROR);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
 
         resp.setStatus(status.value());
         resp.setContentType("application/json");

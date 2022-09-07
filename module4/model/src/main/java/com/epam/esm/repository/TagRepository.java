@@ -19,20 +19,20 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     Optional<Tag> findByName(String name);
 
-    @Query(value =
-            "SELECT tags.id, tags.name\n" +
-                    "FROM tags\n" +
-                    "         JOIN gift_certificate_tag gct on tags.id = gct.tag_id\n" +
-                    "         JOIN user_order_gift_certificate uogc on gct.gift_certificate_id = uogc.gift_certificate_id\n" +
-                    "         JOIN orders uo ON uogc.user_order_id = uo.id\n" +
-                    "    AND uo.user_id = (SELECT u.id\n" +
-                    "                      FROM users u\n" +
-                    "                               JOIN orders o on u.id = o.user_id\n" +
-                    "                      GROUP BY u.id\n" +
-                    "                      ORDER BY SUM(uo.cost) DESC\n" +
-                    "                      LIMIT 1)\n" +
-                    "GROUP BY tags.id, tags.name\n" +
-                    "ORDER BY COUNT(tags.id) DESC\n" +
-                    "LIMIT 1", nativeQuery = true)
+    @Query(value = """
+            SELECT tags.id, tags.name
+                FROM tags
+                         JOIN gift_certificate_tag gct on tags.id = gct.tag_id
+                         JOIN user_order_gift_certificate uogc on gct.gift_certificate_id = uogc.gift_certificate_id
+                         JOIN orders uo ON uogc.user_order_id = uo.id
+                    AND uo.user_id = (SELECT u.id
+                                      FROM users u
+                                               JOIN orders o on u.id = o.user_id
+                                      GROUP BY u.id
+                                      ORDER BY SUM(uo.cost) DESC
+                                      LIMIT 1)
+                GROUP BY tags.id, tags.name
+                ORDER BY COUNT(tags.id) DESC
+                LIMIT 1""", nativeQuery = true)
     Tag findMostUsedTagOfUserWithHighestCostOfAllOrders();
 }

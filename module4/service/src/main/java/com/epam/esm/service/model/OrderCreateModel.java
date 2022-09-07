@@ -1,11 +1,13 @@
 package com.epam.esm.service.model;
 
-import com.epam.esm.domain.Certificate;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
@@ -16,9 +18,14 @@ import java.util.Set;
  * @since 9.05.22
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class OrderCreateModel extends RepresentationModel<OrderCreateModel> {
 
-    @NotEmpty
-    private Set<Certificate> certificates;
+    @NotNull(message = "Order should have customer id")
+    private Long customerId;
+
+    @NotEmpty(message = "Order should have certificates")
+    private Set<Long> certificateIds;
 }

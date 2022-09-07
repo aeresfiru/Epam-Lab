@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -22,11 +20,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * ExceptionHandler
@@ -46,16 +40,8 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpStatus status,
                                                                   WebRequest request) {
         log.warn("Method argument not valid, ", ex);
-        List<String> errors = new ArrayList<>();
-        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.add(error.getField() + ": " + error.getDefaultMessage());
-        }
-        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-            errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
-        }
-
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), errors);
-        return handleExceptionInternal(ex, apiError, headers, status, request);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @Override
@@ -63,44 +49,32 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                           HttpHeaders headers, HttpStatus status,
                                                                           WebRequest request) {
         log.warn("Missing servlet request parameter, ", ex);
-        String error = ex.getParameterName() + " parameter is missing";
-
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
         log.warn("Constraint violation, ", ex);
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        List<String> errors = new ArrayList<>();
-        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            errors.add(violation.getRootBeanClass().getName()
-                    + " " + violation.getPropertyPath() + ": " + violation.getMessage());
-        }
-
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), errors);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
         log.warn("Method argument type mismatch, ", ex);
-        String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
-
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
                                                                    HttpStatus status, WebRequest request) {
         log.warn("No handler found, ", ex);
-        String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
-
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 
     @Override
@@ -109,54 +83,44 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                          HttpStatus status,
                                                                          WebRequest request) {
         log.warn("Request method not supported, ", ex);
-        StringBuilder builder = new StringBuilder();
-        builder.append(ex.getMethod());
-        builder.append(" method is not supported for this request. Supported methods are ");
-        ex.getSupportedHttpMethods().forEach(t -> builder.append(t).append(" "));
-
-        String error = builder.toString();
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         log.warn("Entity not found, ", ex);
-        String error = "Resource not found";
         HttpStatus status = HttpStatus.NOT_FOUND;
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 
     @ExceptionHandler(DuplicateEntityException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleDuplicateEntityException(DuplicateEntityException ex) {
         log.warn("Duplicate entity, ", ex);
-        String error = "Duplicate entry " + ex.getField();
         HttpStatus status = HttpStatus.CONFLICT;
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
         log.warn("Authentication exception, ", ex);
-        String error = ex.getLocalizedMessage();
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
         log.warn("Access denied, ", ex);
-        String error = ex.getLocalizedMessage();
         HttpStatus status = HttpStatus.FORBIDDEN;
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 
     @ExceptionHandler({Exception.class})
@@ -164,8 +128,7 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAll(Exception ex) {
         log.warn("Unhandled exception, ", ex);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        String error = "Error occurred";
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getLocalizedMessage(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(apiError, status);
     }
 }

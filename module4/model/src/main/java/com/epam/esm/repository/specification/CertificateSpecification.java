@@ -3,6 +3,7 @@ package com.epam.esm.repository.specification;
 import com.epam.esm.domain.Certificate;
 import com.epam.esm.domain.Status;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class CertificateSpecification {
 
     public static Specification<Certificate> certificateHasTags(Collection<String> tagNames) {
         return (root, query, cb) -> {
-            if (tagNames == null) {
+            if (CollectionUtils.isEmpty(tagNames)) {
                 return cb.conjunction();
             }
             List<Predicate> restrictions = new ArrayList<>();
@@ -36,7 +37,7 @@ public class CertificateSpecification {
 
     public static Specification<Certificate> certificateNameLike(String name) {
         return (root, query, cb) -> {
-            if (name == null) {
+            if (name == null || name.trim().equals("")) {
                 return cb.conjunction();
             }
             return cb.like(root.get("name"), "%" + name + "%");
@@ -45,7 +46,7 @@ public class CertificateSpecification {
 
     public static Specification<Certificate> certificateDescriptionLike(String description) {
         return (root, query, cb) -> {
-            if (description == null) {
+            if (description == null || description.trim().equals("")) {
                 return cb.conjunction();
             }
             return cb.like(root.get("description"), "%" + description + "%");

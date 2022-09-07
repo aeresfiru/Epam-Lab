@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/nav.css">
+    <link rel="stylesheet" type="text/css" href="css/add_item.css">
+    <title>Logo | Add New Coupon</title>
+</head>
+<body>
+
+    <nav class="header">
+        <div class="reorder">
+            <span class="material-icons reorder-icon">reorder</span>
+            <span class="reorder-logo">Logo</span>
+        </div>
+        <div class="search">
+            <form class="search-form">
+                <input type="text" placeholder="Search by item name" class="search-input" size="60">
+                <select class="search-button">
+                    <option selected disabled>All Categories</option>
+                </select>           
+            </form>
+        </div>
+        <div class="items">
+            <span class="material-icons favorite">favorite</span>
+            <span class="material-icons cart">shopping_cart</span>
+            <div style="display: flex;">
+                <button class="items-button">Login</button>
+                <div class="vl"></div>
+                <button class="items-button">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="head">
+            Add New Coupon
+        </div>
+        <form class="form">
+            <div class="row">
+                <div class="column"> 
+                    <div class="form-item">
+                        <label for="company">Company</label>
+                        <input type="text" id="company"/>
+                    </div>
+                </div>
+                <div class="column"> 
+                    <div class="form-item">
+                        <label for="item-name">Item Name</label>
+                        <input type="text" id="item-name"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column"> 
+                    <div class="form-item">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="category name" selected disabled>Category Name</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label for="valid">Valid to</label>
+                        <input type="datetime-local" id="valid" placeholder="12/12/2020 02:00"/>
+                    </div>
+                </div>
+                <div class="column"> 
+                    <div class="form-item">
+                        <label for="short-description">Short description</label>
+                        <textarea id="short-description" rows="8" cols="50"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column"> 
+                    <div class="form-item">
+                        <label for="price">Price</label>
+                        <input type="text" id="price"/>
+                    </div>
+                    <div class="form-item">
+                        <label for="images">Images</label>
+                        <input type="file" id="images" multiple />
+                    </div>
+                </div>
+                <div class="column"> 
+                    <div class="form-item">
+                        <label for="short-description">Long description</label>
+                        <textarea id="short-description" rows="8" cols="50"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column"></div>
+                <div class="column" style="align-content: flex-end;">
+                    <div class="form-button">
+                        <input type="button" value="Back" id="back">
+                        <input type="submit" value="Save" id="save">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

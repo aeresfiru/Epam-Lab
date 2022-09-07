@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 
 /**
  * RestAccessDeniedHandler
@@ -41,23 +38,12 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
 
         HttpStatus status = HttpStatus.FORBIDDEN;
         PrintWriter out = resp.getWriter();
-        String error = getErrorMessage(req);
 
-        ApiError apiError = new ApiError(new Date(), status.value(), status.name(), ex.getMessage(), error);
+        ApiError apiError = new ApiError(status, status.value(), ex.getLocalizedMessage());
 
         resp.setStatus(status.value());
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         out.write(objectMapper.writeValueAsString(apiError));
-    }
-
-    private String getErrorMessage(HttpServletRequest req) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            return "User: '" + auth.getName()
-                    + "' attempted to access the protected URL: "
-                    + req.getRequestURI();
-        }
-        return "User attempted to access the protected URL: " + req.getRequestURI();
     }
 }

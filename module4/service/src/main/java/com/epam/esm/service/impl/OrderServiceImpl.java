@@ -53,16 +53,6 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
-    @Override
-    @Transactional
-    public void deleteById(Long orderId) {
-        log.info("Deleting order - orderId: {}", orderId);
-        if (!orderRepository.existsById(orderId)) {
-            throw new EntityNotFoundException();
-        }
-        orderRepository.deleteById(orderId);
-    }
-
     private void calculateCost(Order order) {
         BigDecimal cost = new BigDecimal("0.00");
         Set<Certificate> certificates = new HashSet<>();

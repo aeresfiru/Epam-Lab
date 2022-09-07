@@ -1,0 +1,35 @@
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f2f2f2;
+}
+
+.register-wrapper {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  height: 420px;
+  width: 70%;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  background: #c2c2c2;
+  color: #ffffff;
+  height: 60px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-self: flex-start;
+  font-size: 1.5em;
+  padding-left: 40px;
+}
+
+.form {
+  padding: 0 50px;
+}
+
+.row {
+  column-gap: 3%;
+}

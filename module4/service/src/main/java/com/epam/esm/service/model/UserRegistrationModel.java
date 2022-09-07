@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -27,20 +26,6 @@ public class UserRegistrationModel extends RepresentationModel<UserModel> {
     @Length(min = 3, max = 95, groups = OnPersist.class)
     @Length(min = 3)
     private String username;
-
-    @NotNull(groups = OnPersist.class)
-    @Length(min = 3, max = 95, groups = OnPersist.class)
-    @Length(min = 3)
-    private String firstName;
-
-    @NotNull(groups = OnPersist.class)
-    @Length(min = 3, max = 95, groups = OnPersist.class)
-    @Length(min = 3)
-    private String lastName;
-
-    @NotNull(groups = OnPersist.class)
-    @Email
-    private String email;
 
     @NotNull(groups = OnPersist.class)
     @Length(min = 7, max = 60, groups = OnPersist.class)

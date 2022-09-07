@@ -1,7 +1,5 @@
-rootProject.name = 'rest-api-advanced'
+rootProject.name = 'certificate-app'
 
-include 'model'
-include 'service'
-include 'web'
-include 'web'
-
+include(':model')
+include(':service')
+include(':web')

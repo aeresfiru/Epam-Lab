@@ -29,7 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @since 3.05.22
  */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 @AllArgsConstructor
 public class UserRestController {
 
